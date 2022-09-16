@@ -25,5 +25,6 @@
 
         <!-- Map entities -->
         <mapping class="entity.User"/>
+        <mapping class="entity.Assistance"/>
     </session-factory>
 </hibernate-configuration>
