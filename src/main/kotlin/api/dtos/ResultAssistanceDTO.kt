@@ -1,10 +1,10 @@
-package api.dtos.controllers.dtos
+package api.dtos
 
 import entity.Assistance
 
-class ResultAssistencesDTO(val result: List<AssistanceSimpleDTO>) {
+class ResultAssistanceDTO(val result: List<AssistanceSimpleDTO>) {
     companion object {
-        fun fromModel(viajes: List<Assistance>): ResultAssistencesDTO {
+        fun fromModel(viajes: List<Assistance>): ResultAssistanceDTO {
             val simpleviajesDTOs = viajes.map {
                 AssistanceSimpleDTO.fromModel(
                     it.id,
@@ -14,7 +14,7 @@ class ResultAssistencesDTO(val result: List<AssistanceSimpleDTO>) {
                     it.assistant
                 )
             }
-            return ResultAssistencesDTO(simpleviajesDTOs)
+            return ResultAssistanceDTO(simpleviajesDTOs)
         }
     }
 }

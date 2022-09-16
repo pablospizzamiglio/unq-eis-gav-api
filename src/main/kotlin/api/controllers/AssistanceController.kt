@@ -1,6 +1,6 @@
 package api.controllers
 
-import api.dtos.controllers.dtos.ResultAssistencesDTO
+import api.dtos.ResultAssistanceDTO
 import dao.HibernateAssistanceDAO
 import io.javalin.http.Context
 import transaction.TransactionRunner
@@ -10,7 +10,7 @@ data class AssistanceController(val hibernateAssistanceDAO: HibernateAssistanceD
         val assistances = TransactionRunner.runTrx {
             hibernateAssistanceDAO.findAll()
         }
-        val result = ResultAssistencesDTO.fromModel(assistances)
+        val result = ResultAssistanceDTO.fromModel(assistances)
         ctx.json(result)
     }
 }

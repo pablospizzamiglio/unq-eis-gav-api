@@ -1,5 +1,5 @@
 import api.controllers.AssistanceController
-import api.dtos.controllers.dtos.ErrorDTO
+import api.dtos.ErrorDTO
 import dao.HibernateAssistanceDAO
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder

@@ -1,3 +1,3 @@
-package api.dtos.controllers.dtos
+package api.dtos
 
 data class ErrorDTO(val message: String)
