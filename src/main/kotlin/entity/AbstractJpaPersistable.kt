@@ -53,6 +53,6 @@ abstract class AbstractJpaPersistable<T : Serializable> : Persistable<T> {
     }
 
     override fun hashCode(): Int {
-        return 31
+        return 31 // TODO: Mejorar
     }
 }
