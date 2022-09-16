@@ -1,6 +1,7 @@
 package dao
 
 import transaction.HibernateTransaction
+import java.util.UUID
 
 open class HibernateDAO<T>(private val entityType: Class<T>) {
     open fun save(entity: T): T {
@@ -14,7 +15,7 @@ open class HibernateDAO<T>(private val entityType: Class<T>) {
         session.update(entity)
     }
 
-    open fun find(id: Long): T {
+    open fun find(id: UUID): T {
         val session = HibernateTransaction.currentSession
         return session.get(entityType, id) ?: throw RuntimeException("The entity $entityType with id $id does not exist")
     }
