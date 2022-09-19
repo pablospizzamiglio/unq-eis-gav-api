@@ -9,7 +9,7 @@ import transaction.TransactionRunner.runTrx
 
 class HibernateDAOAssistantTest {
     @Test
-    fun `basic assistances checks`() {
+    fun `basic assistance checks`() {
         val assistanceDAO = HibernateAssistanceDAO()
         val userOne = User(
             "Test",
