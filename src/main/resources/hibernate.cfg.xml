@@ -19,6 +19,7 @@
 
         <!-- Echo all executed SQL to stdout -->
         <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
 
         <!-- Drop and create database on startup -->
         <property name="hibernate.hbm2ddl.auto">create</property>

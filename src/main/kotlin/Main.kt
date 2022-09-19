@@ -3,24 +3,23 @@ import api.dtos.ErrorDTO
 import dao.HibernateAssistanceDAO
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
+import io.javalin.core.util.Header
 import io.javalin.http.NotFoundResponse
 
 fun main() {
+    val assistanceController = AssistanceController(HibernateAssistanceDAO())
+
     val app = Javalin.create() {
         it.defaultContentType = "application/json"
         it.enableCorsForAllOrigins()
     }.before {
-        it.header(io.javalin.core.util.Header.ACCESS_CONTROL_EXPOSE_HEADERS, "*")
+        it.header(Header.ACCESS_CONTROL_EXPOSE_HEADERS, "*")
     }
     app.start(7070)
 
-    app.before {
-        it.header("Access-Control-Expose-Headers", "*")
-    }
-
     app.routes {
         ApiBuilder.path("assistances") {
-            ApiBuilder.get(AssistanceController(HibernateAssistanceDAO())::findAll)
+            ApiBuilder.get(assistanceController::findAll)
         }
     }
 

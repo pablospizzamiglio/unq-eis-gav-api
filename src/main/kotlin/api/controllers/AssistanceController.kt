@@ -3,12 +3,12 @@ package api.controllers
 import api.dtos.ResultAssistanceDTO
 import dao.HibernateAssistanceDAO
 import io.javalin.http.Context
-import transaction.TransactionRunner
+import transaction.TransactionRunner.runTrx
 
-data class AssistanceController(val hibernateAssistanceDAO: HibernateAssistanceDAO) {
+class AssistanceController(private val assistanceDAO: HibernateAssistanceDAO) {
     fun findAll(ctx: Context) {
-        val assistances = TransactionRunner.runTrx {
-            hibernateAssistanceDAO.findAll()
+        val assistances = runTrx {
+            assistanceDAO.findAll()
         }
         val result = ResultAssistanceDTO.fromModel(assistances)
         ctx.json(result)
