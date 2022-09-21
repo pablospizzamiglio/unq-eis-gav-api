@@ -6,7 +6,7 @@ import java.util.*
 class AssistanceSimpleDTO(
     val id: UUID,
     val kind: String,
-    val detail: String,
+    val fixedCost: Double,
     val costPerKm: Double,
     val assistant: User
 ) {
@@ -14,11 +14,11 @@ class AssistanceSimpleDTO(
         fun fromModel(
             id: UUID?,
             kind: String,
-            detail: String,
+            fixedCost: Double,
             costPerKm: Double,
             assistant: User
         ): AssistanceSimpleDTO {
-            return AssistanceSimpleDTO(id!!, kind, detail, costPerKm, assistant)
+            return AssistanceSimpleDTO(id!!, kind, fixedCost, costPerKm, assistant)
         }
     }
 }
