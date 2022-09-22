@@ -2,6 +2,7 @@ package repository
 
 import dao.HibernateAssistanceDAO
 import entity.Assistance
+import entity.Kind
 import entity.User
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -14,7 +15,6 @@ class HibernateDAOAssistantTest {
         val userOne = User(
             "Test",
             "McTest",
-
             "ASSISTANCE",
             "email@email.com",
             "55556666"
@@ -27,8 +27,8 @@ class HibernateDAOAssistantTest {
             "0303456664"
         )
 
-        val assistanceOne = Assistance("Auto", "Security included", 40.0, userOne)
-        val assistanceTwo = Assistance("Vans", "Top 10 in assistance's", 0.0, userTwo)
+        val assistanceOne = Assistance(Kind.LARGE,250.0, 500.0, userOne)
+        val assistanceTwo = Assistance(Kind.MEDIUM, 325.0,425.0, userTwo)
 
         val assOne = runTrx {
             assistanceDAO.save(assistanceOne)
@@ -37,7 +37,7 @@ class HibernateDAOAssistantTest {
             assistanceDAO.save(assistanceTwo)
         }
 
-        Assertions.assertThat(userOne).isEqualTo(assOne.assistant)
-        Assertions.assertThat(userTwo).isEqualTo(assTwo.assistant)
+        Assertions.assertThat(userOne).isEqualTo(assOne.user)
+        Assertions.assertThat(userTwo).isEqualTo(assTwo.user)
     }
 }

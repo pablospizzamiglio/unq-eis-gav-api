@@ -3,12 +3,20 @@ package entity
 import java.util.UUID
 import javax.persistence.*
 
+public enum class Kind{
+    SMALL,
+    MEDIUM,
+    LARGE,
+    BATTERY,
+    START_UP
+}
 @Entity
 @Table(name = "assistance")
 class Assistance(
-    val kind: String,
-    val detail: String,
+    @Enumerated (EnumType.STRING)
+    val kind: Kind,
     val costPerKm: Double,
+    val fixedCost: Double,
     @OneToOne(cascade = [CascadeType.ALL])
-    val assistant: User
+    val user: User
 ) : AbstractJpaPersistable<UUID>()

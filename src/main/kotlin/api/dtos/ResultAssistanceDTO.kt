@@ -8,10 +8,10 @@ class ResultAssistanceDTO(val result: List<AssistanceSimpleDTO>) {
             val simpleviajesDTOs = viajes.map {
                 AssistanceSimpleDTO.fromModel(
                     it.id,
-                    it.kind,
-                    it.detail,
+                    it.kind.toString(),
+                    it.fixedCost,
                     it.costPerKm,
-                    it.assistant
+                    it.user
                 )
             }
             return ResultAssistanceDTO(simpleviajesDTOs)
