@@ -2,24 +2,31 @@ package api.controllers
 
 import api.dtos.ResultAssistanceDTO
 import dao.HibernateAssistanceDAO
+import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
+import io.javalin.http.NotFoundResponse
 import transaction.TransactionRunner.runTrx
 
 class AssistanceController(private val assistanceDAO: HibernateAssistanceDAO) {
     fun findAll(ctx: Context) {
-        val kind = ctx.queryParam("kind")
-        if (kind.isNullOrBlank()) {
+        if (ctx.queryParam("kind") == null) {
             val assistances = runTrx {
                 assistanceDAO.findAll()
             }
             val result = ResultAssistanceDTO.fromModel(assistances)
             ctx.json(result)
         } else {
-            val assistances = runTrx {
-                assistanceDAO.findAllByKind(kind)
+            try {
+                val kind = ctx.queryParamAsClass("kind", String::class.java)
+                    .check({ c -> !c.isNullOrBlank() }, "No parameters added").get()
+                val assistances = runTrx {
+                    assistanceDAO.findAllByKind(kind)
+                }
+                val result = ResultAssistanceDTO.fromModel(assistances)
+                ctx.json(result)
+            } catch (e: BadRequestResponse) {
+                throw BadRequestResponse("No parameters added")
             }
-            val result = ResultAssistanceDTO.fromModel(assistances)
-            ctx.json(result)
         }
     }
 }

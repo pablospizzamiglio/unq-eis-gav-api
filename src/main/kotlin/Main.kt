@@ -4,6 +4,7 @@ import dao.HibernateAssistanceDAO
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.core.util.Header
+import io.javalin.http.BadRequestResponse
 import io.javalin.http.NotFoundResponse
 
 fun main() {
@@ -24,6 +25,9 @@ fun main() {
     }
 
     app.exception(NotFoundResponse::class.java) { e, ctx ->
+        ctx.status(e.status).json(ErrorDTO(e.message!!))
+    }
+    app.exception(BadRequestResponse::class.java) { e, ctx ->
         ctx.status(e.status).json(ErrorDTO(e.message!!))
     }
 }
