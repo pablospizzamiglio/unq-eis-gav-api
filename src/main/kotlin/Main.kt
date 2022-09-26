@@ -1,6 +1,8 @@
 import api.controllers.AssistanceController
+import api.controllers.OrderController
 import api.dtos.ErrorDTO
 import dao.HibernateAssistanceDAO
+import dao.HibernateOrderDAO
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.core.util.Header
@@ -9,7 +11,7 @@ import io.javalin.http.NotFoundResponse
 
 fun main() {
     val assistanceController = AssistanceController(HibernateAssistanceDAO())
-
+    val orderController = OrderController(HibernateOrderDAO(), HibernateAssistanceDAO())
     val app = Javalin.create() {
         it.defaultContentType = "application/json"
         it.enableCorsForAllOrigins()
@@ -21,6 +23,9 @@ fun main() {
     app.routes {
         ApiBuilder.path("assistances") {
             ApiBuilder.get(assistanceController::findAll)
+        }
+        ApiBuilder.path("order") {
+            ApiBuilder.post(orderController::generateOrder)
         }
     }
 
