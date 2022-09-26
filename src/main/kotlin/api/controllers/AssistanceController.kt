@@ -25,7 +25,7 @@ class AssistanceController(private val assistanceDAO: HibernateAssistanceDAO) {
                 val result = ResultAssistanceDTO.fromModel(assistances)
                 ctx.json(result)
             } catch (e: BadRequestResponse) {
-                throw BadRequestResponse("No parameters added")
+                throw BadRequestResponse(e.message!!)
             }
         }
     }
