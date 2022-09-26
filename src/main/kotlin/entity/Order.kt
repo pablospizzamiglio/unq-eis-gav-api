@@ -16,8 +16,8 @@ public enum class Status {
 @Table(name = "orderassistances")
 class Order(
     val assistanceId: UUID,
-    val addressStreet: String,
-    val addressBetweenStreets: String,
+    val street: String,
+    val betweenStreets: String,
     val city: String,
     val province: String,
     val phoneNumber: Int,

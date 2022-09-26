@@ -15,9 +15,9 @@ class OrderController(private val orderDAO: HibernateOrderDAO, private val assis
         try {
             val dates = ctx.bodyValidator<SimpleOrderDTO>()
                 .check({ obj -> !obj.assistanceId.toString().isNullOrBlank() }, "The assistant id was not loaded")
-                .check({ obj -> !obj.addressStreet.isNullOrBlank() }, "The address street was not loaded")
+                .check({ obj -> !obj.street.isNullOrBlank() }, "The address street was not loaded")
                 .check(
-                    { obj -> !obj.addressBetweenStreets.isNullOrBlank() },
+                    { obj -> !obj.betweenStreets.isNullOrBlank() },
                     "The address between streets was not loaded"
                 )
                 .check({ obj -> !obj.city.isNullOrBlank() }, "The city was not loaded")
@@ -28,8 +28,8 @@ class OrderController(private val orderDAO: HibernateOrderDAO, private val assis
             }
             val simpleOrder = Order(
                 assistance.id!!,
-                dates.addressStreet,
-                dates.addressBetweenStreets,
+                dates.street,
+                dates.betweenStreets,
                 dates.city,
                 dates.province,
                 dates.phoneNumber,
