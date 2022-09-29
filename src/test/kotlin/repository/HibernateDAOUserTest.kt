@@ -1,8 +1,11 @@
 package repository
 
+import dao.HibernateDataDAO
 import dao.HibernateUserDAO
 import entity.User
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import services.DataServiceImpl
 import transaction.TransactionRunner.runTrx
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -36,5 +39,10 @@ class HibernateDAOUserTest {
         }
 
         assertEquals(user, recoveredUser)
+    }
+
+    @AfterEach
+    fun cleanup() {
+        DataServiceImpl(HibernateDataDAO()).clear()
     }
 }
