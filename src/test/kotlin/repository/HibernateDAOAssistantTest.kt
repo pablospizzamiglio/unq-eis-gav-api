@@ -1,11 +1,14 @@
 package repository
 
 import dao.HibernateAssistanceDAO
+import dao.HibernateDataDAO
 import entity.Assistance
 import entity.Kind
 import entity.User
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import services.DataServiceImpl
 import transaction.TransactionRunner.runTrx
 
 class HibernateDAOAssistantTest {
@@ -85,5 +88,10 @@ class HibernateDAOAssistantTest {
         }
 
         Assertions.assertThat(result).contains(assTwo)
+    }
+
+    @AfterEach
+    fun cleanup() {
+        DataServiceImpl(HibernateDataDAO()).clear()
     }
 }
