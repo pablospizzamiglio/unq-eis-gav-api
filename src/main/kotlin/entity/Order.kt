@@ -7,6 +7,7 @@ import javax.persistence.Enumerated
 import javax.persistence.Table
 
 public enum class Status {
+    PENDING_APPROVAL,
     IN_PROGRESS,
     CANCELLED,
     COMPLETE
