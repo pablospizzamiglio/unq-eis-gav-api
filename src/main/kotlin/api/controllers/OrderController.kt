@@ -35,7 +35,7 @@ class OrderController(private val orderDAO: HibernateOrderDAO, private val assis
                 dates.phoneNumber,
                 assistance.costPerKm,
                 assistance.fixedCost,
-                Status.IN_PROGRESS
+                Status.PENDING_APPROVAL
             )
             val order = runTrx {
                 orderDAO.save(simpleOrder)
