@@ -25,5 +25,5 @@ class Order(
     val costPerKm: Double,
     val fixedCost: Double,
     @Enumerated(EnumType.STRING)
-    val status: Status
+    var status: Status
 ) : AbstractJpaPersistable<UUID>()

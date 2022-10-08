@@ -1,6 +1,7 @@
 package api.controllers
 
 import api.dtos.SimpleOrderDTO
+import api.dtos.SimpleUpdateOrderDTO
 import dao.HibernateAssistanceDAO
 import dao.HibernateOrderDAO
 import entity.Order
@@ -45,4 +46,27 @@ class OrderController(private val orderDAO: HibernateOrderDAO, private val assis
             throw BadRequestResponse(e.message!!)
         }
     }
+
+    fun updateOrder(ctx: Context) {
+        try {
+            val dates = ctx.bodyValidator<SimpleUpdateOrderDTO>()
+                .check({ obj -> !obj.orderId.toString().isNullOrBlank() }, "The order id was not loaded")
+                .check({ obj -> !obj.status.isNullOrBlank() }, "The status was not loaded")
+                .check({ obj -> !obj.password.isNullOrBlank() }, "The password was not loaded")
+                .check({ obj -> obj.password == "0303456" }, "Wrong password").get()
+            var orderToUpdate = runTrx {
+                orderDAO.find(dates.orderId)
+            }
+            orderToUpdate.status = enumValueOf(dates.status)
+            val order = runTrx {
+                orderDAO.update(orderToUpdate)
+            }
+            ctx.json(order)
+        } catch (e: java.lang.RuntimeException) {
+            throw BadRequestResponse(e.message!!)
+        }catch (e: java.lang.NullPointerException) {
+            throw BadRequestResponse(e.message!!)
+        }
+    }
+
 }

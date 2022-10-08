@@ -26,6 +26,7 @@ fun main() {
         }
         ApiBuilder.path("order") {
             ApiBuilder.post(orderController::generateOrder)
+            ApiBuilder.put(orderController::updateOrder)
         }
     }
 
