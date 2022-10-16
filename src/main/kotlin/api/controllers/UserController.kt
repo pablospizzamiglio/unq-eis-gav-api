@@ -12,7 +12,7 @@ class UserController(private val userDAO: HibernateUserDAO) {
 
     fun createUser(ctx: Context) {
         try {
-            val dates = ctx.bodyValidator<UserDTO>()
+            val newUser = ctx.bodyValidator<UserDTO>()
                 .check({ obj -> !obj.firstName.isNullOrBlank() }, "The first name was not loaded")
                 .check({ obj -> !obj.lastName.isNullOrBlank() }, "The last name was not loaded")
                 .check({ obj -> !obj.type.isNullOrBlank() }, "The type was not loaded")
@@ -21,11 +21,11 @@ class UserController(private val userDAO: HibernateUserDAO) {
             val user = runTrx {
                 userDAO.save(
                     User(
-                        dates.firstName,
-                        dates.lastName,
-                        dates.type,
-                        dates.emailAddress,
-                        dates.telephoneNumber
+                        newUser.firstName,
+                        newUser.lastName,
+                        newUser.type,
+                        newUser.emailAddress,
+                        newUser.telephoneNumber
                     )
                 )
             }
@@ -37,10 +37,10 @@ class UserController(private val userDAO: HibernateUserDAO) {
 
     fun findUser(ctx: Context) {
         try {
-            val dates = ctx.bodyValidator<UserIdDTO>()
+            val userToFind = ctx.bodyValidator<UserIdDTO>()
                 .check({ obj -> !obj.toString().isNullOrBlank() }, "The id user was not loaded").get()
             val user = runTrx {
-                userDAO.find(dates.id)
+                userDAO.find(userToFind.id)
             }
             ctx.json(user)
         } catch (e: java.lang.RuntimeException) {
