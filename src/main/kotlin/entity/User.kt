@@ -1,7 +1,8 @@
 package entity
 
-import java.util.UUID
-import javax.persistence.*
+import java.util.*
+import javax.persistence.Entity
+import javax.persistence.Table
 
 @Entity
 @Table(name = "user")
@@ -11,5 +12,5 @@ class User(
     val type: String,
     val emailAddress: String,
     val telephoneNumber: String,
-    var debts:Double = 0.0
+    var debts: Double = 0.0
 ) : AbstractJpaPersistable<UUID>()
