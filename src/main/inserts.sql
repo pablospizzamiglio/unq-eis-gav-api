@@ -7,18 +7,18 @@ TRUNCATE TABLE gav.user;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- USER INSERT
-INSERT INTO gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
+INSERT INTO gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type, debts)
 VALUES
-    (UUID_TO_BIN('5f700ac8-0efe-4683-9798-6595c52d1668'), 'pedro@gmail.com', 'Pedro', 'Escamoso', '1145671234', 'ASSISTANCE'),
-    (UUID_TO_BIN('c2d0f55a-59a5-4291-b936-a03f9bb7c932'), 'elpatron@gmail.com', 'Pablo', 'Escobar', '1166607770', 'ASSISTANCE'),
-    (UUID_TO_BIN('07217cc1-d9ca-40a8-b466-5aa08656cd55'), 'lagrua@gmail.com', 'La Grúa', 'S.A.', '1197445548', 'ASSISTANCE'),
-    (UUID_TO_BIN('4db16830-d9a7-4159-94aa-0e6f9467a3c9'), 'raul@gmail.com', 'Raúl', 'Ruíz', '1158964125', 'ASSISTANCE'),
-    (UUID_TO_BIN('fc65a065-5299-4567-afb6-d3d0cec7046b'), 'megagrua@gmail.com', 'Megagrúa', 'R.R.L.', '115556879', 'ASSISTANCE'),
-    (UUID_TO_BIN('acb1418d-5dee-49fe-81f3-55acb147582e'), 'roque@gmail.com', 'Roque', 'Saenz Peña', '1155543331', 'ASSISTANCE'),
-    (UUID_TO_BIN('e1308c95-3b34-4d5a-9249-35921af87b64'), 'lamasrapida@gmail.com', 'La Más Rápida', 'S.A.', '1154624321', 'ASSISTANCE'),
-    (UUID_TO_BIN('ee08ac6c-44b6-4dda-a3e3-8f9002a91263'), 'reysol@gmail.com', 'Luis', 'Miguel', '1155558787', 'ASSISTANCE'),
-    (UUID_TO_BIN('f9651f3b-5a20-4cbe-800d-c377260c29d0'), 'standard@gmail.com', 'Ricky', 'Foot', '1144657852', 'ASSISTANCE'),
-    (UUID_TO_BIN('27db7c25-d928-4d5b-b62a-073f26a98db8'), 'marvel@gmail.com', 'Stan', 'Lee', '1132167878', 'ASSISTANCE');
+    (UUID_TO_BIN('5f700ac8-0efe-4683-9798-6595c52d1668'), 'pedro@gmail.com', 'Pedro', 'Escamoso', '1145671234', 'ASSISTANCE', 0.0),
+    (UUID_TO_BIN('c2d0f55a-59a5-4291-b936-a03f9bb7c932'), 'elpatron@gmail.com', 'Pablo', 'Escobar', '1166607770', 'ASSISTANCE', 0.0),
+    (UUID_TO_BIN('07217cc1-d9ca-40a8-b466-5aa08656cd55'), 'lagrua@gmail.com', 'La Grúa', 'S.A.', '1197445548', 'ASSISTANCE', 0.0),
+    (UUID_TO_BIN('4db16830-d9a7-4159-94aa-0e6f9467a3c9'), 'raul@gmail.com', 'Raúl', 'Ruíz', '1158964125', 'ASSISTANCE', 0.0),
+    (UUID_TO_BIN('fc65a065-5299-4567-afb6-d3d0cec7046b'), 'megagrua@gmail.com', 'Megagrúa', 'R.R.L.', '115556879', 'ASSISTANCE', 0.0),
+    (UUID_TO_BIN('acb1418d-5dee-49fe-81f3-55acb147582e'), 'roque@gmail.com', 'Roque', 'Saenz Peña', '1155543331', 'ASSISTANCE', 0.0),
+    (UUID_TO_BIN('e1308c95-3b34-4d5a-9249-35921af87b64'), 'lamasrapida@gmail.com', 'La Más Rápida', 'S.A.', '1154624321', 'ASSISTANCE', 0.0),
+    (UUID_TO_BIN('ee08ac6c-44b6-4dda-a3e3-8f9002a91263'), 'reysol@gmail.com', 'Luis', 'Miguel', '1155558787', 'ASSISTANCE', 0.0),
+    (UUID_TO_BIN('f9651f3b-5a20-4cbe-800d-c377260c29d0'), 'standard@gmail.com', 'Ricky', 'Foot', '1144657852', 'ASSISTANCE', 0.0),
+    (UUID_TO_BIN('27db7c25-d928-4d5b-b62a-073f26a98db8'), 'marvel@gmail.com', 'Stan', 'Lee', '1132167878', 'ASSISTANCE', 0.0);
 
 -- ASSISTANCE INSERT
 INSERT INTO gav.assistance (id, costPerKm, fixedCost, user_id, kind)

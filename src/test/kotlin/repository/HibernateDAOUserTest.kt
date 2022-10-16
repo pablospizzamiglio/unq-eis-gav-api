@@ -41,6 +41,23 @@ class HibernateDAOUserTest {
         assertEquals(user, recoveredUser)
     }
 
+    fun `basic debts checks`() {
+        val newUser = User(
+            "Test",
+            "McTest",
+            "CLIENT",
+            "email@email.com",
+            "55556666"
+        )
+
+        val userDAO = HibernateUserDAO()
+        val user = runTrx {
+            userDAO.save(newUser)
+        }
+
+        assertEquals(user.debts, 0.0)
+    }
+
     @AfterEach
     fun cleanup() {
         DataServiceImpl(HibernateDataDAO()).clear()
