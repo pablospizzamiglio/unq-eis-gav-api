@@ -4,26 +4,26 @@ truncate table gav.assistance;
 truncate table gav.user;
 SET FOREIGN_KEY_CHECKS = 1;
 -- insert de USER
-insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
-values (1, 'pedro@gmail.com', 'Pedro', 'Escamoso', '1145671234', 'ASSISTANCE');
-insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
-values (2, 'elpatron@gmail.com', 'Pablo', 'Escobar', '1166607770', 'ASSISTANCE');
-insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
-values (3, 'lagrua@gmail.com', 'La Grua', 'S.A.', '1197445548', 'ASSISTANCE');
-insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
-values (4, 'raul@gmail.com', 'Raul', 'Ruiz', '1158964125', 'ASSISTANCE');
-insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
-values (5, 'megagrua@gmail.com', 'Megagrua', 'R.R.L.', '115556879', 'ASSISTANCE');
-insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
-values (6, 'roque@gmail.com', 'Roque', 'Saenz Penia', '1155543331', 'ASSISTANCE');
-insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
-values (7, 'lamasrapida@gmail.com', 'La Mas Rapida', 'S.A.', '1154624321', 'ASSISTANCE');
-insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
-values (8, 'reysol@gmail.com', 'Luis', 'Miguel', '1155558787', 'ASSISTANCE');
-insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
-values (9, 'standard@gmail.com', 'Ricky', 'Foot', '1144657852', 'ASSISTANCE');
-insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type)
-values (10, 'marvel@gmail.com', 'Stan', 'Lee', '1132167878', 'ASSISTANCE');
+insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type,debts)
+values (1, 'pedro@gmail.com', 'Pedro', 'Escamoso', '1145671234', 'ASSISTANCE',0.0);
+insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type,debts)
+values (2, 'elpatron@gmail.com', 'Pablo', 'Escobar', '1166607770', 'ASSISTANCE',0.0);
+insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type,debts)
+values (3, 'lagrua@gmail.com', 'La Grua', 'S.A.', '1197445548', 'ASSISTANCE',0.0);
+insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type,debts)
+values (4, 'raul@gmail.com', 'Raul', 'Ruiz', '1158964125', 'ASSISTANCE',0.0);
+insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type,debts)
+values (5, 'megagrua@gmail.com', 'Megagrua', 'R.R.L.', '115556879', 'ASSISTANCE',0.0);
+insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type,debts)
+values (6, 'roque@gmail.com', 'Roque', 'Saenz Penia', '1155543331', 'ASSISTANCE',0.0);
+insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type,debts)
+values (7, 'lamasrapida@gmail.com', 'La Mas Rapida', 'S.A.', '1154624321', 'ASSISTANCE',0.0);
+insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type,debts)
+values (8, 'reysol@gmail.com', 'Luis', 'Miguel', '1155558787', 'ASSISTANCE',0.0);
+insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type,debts)
+values (9, 'standard@gmail.com', 'Ricky', 'Foot', '1144657852', 'ASSISTANCE',0.0);
+insert into gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type,debts)
+values (10, 'marvel@gmail.com', 'Stan', 'Lee', '1132167878', 'ASSISTANCE',0.0);
 commit;
 -- insert de assistance
 insert into gav.assistance (id, costperkm, fixedcost, user_id, kind)
