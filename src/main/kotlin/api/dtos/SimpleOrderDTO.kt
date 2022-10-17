@@ -8,5 +8,6 @@ class SimpleOrderDTO(
     val betweenStreets: String,
     val city: String,
     val province: String,
-    val phoneNumber: String
+    val phoneNumber: String,
+    val userId: UUID,
 )

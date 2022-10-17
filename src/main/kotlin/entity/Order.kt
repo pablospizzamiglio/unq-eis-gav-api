@@ -13,7 +13,7 @@ enum class Status {
 @Entity
 @Table(name = "orderassistances")
 class Order(
-    @OneToOne(cascade = [CascadeType.ALL])
+    @ManyToOne(cascade = [CascadeType.ALL])
     val assistance: Assistance,
     val street: String,
     val betweenStreets: String,
@@ -23,5 +23,7 @@ class Order(
     val costPerKm: Double,
     val fixedCost: Double,
     @Enumerated(EnumType.STRING)
-    var status: Status
+    var status: Status,
+    @ManyToOne(cascade = [CascadeType.ALL])
+    val user: User
 ) : AbstractJpaPersistable<UUID>()
