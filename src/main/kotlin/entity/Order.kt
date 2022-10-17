@@ -1,12 +1,9 @@
 package entity
 
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.Table
+import javax.persistence.*
 
-public enum class Status {
+enum class Status {
     PENDING_APPROVAL,
     IN_PROGRESS,
     CANCELLED,
@@ -16,12 +13,13 @@ public enum class Status {
 @Entity
 @Table(name = "orderassistances")
 class Order(
-    val assistanceId: UUID,
+    @OneToOne(cascade = [CascadeType.ALL])
+    val assistance: Assistance,
     val street: String,
     val betweenStreets: String,
     val city: String,
     val province: String,
-    val phoneNumber: Int,
+    val phoneNumber: String,
     val costPerKm: Double,
     val fixedCost: Double,
     @Enumerated(EnumType.STRING)

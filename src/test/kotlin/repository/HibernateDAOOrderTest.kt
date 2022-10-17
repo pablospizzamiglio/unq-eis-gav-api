@@ -30,12 +30,12 @@ class HibernateDAOOrderTest {
         }
 
         val order = Order(
-            assOne.id!!,
+            assOne,
             "q",
             "q",
             "q",
             "q",
-            1111111111,
+            "1111111111",
             assOne.costPerKm,
             assOne.fixedCost,
             Status.PENDING_APPROVAL

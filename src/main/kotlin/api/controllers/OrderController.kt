@@ -14,7 +14,7 @@ class OrderController(private val orderDAO: HibernateOrderDAO, private val assis
 
     fun generateOrder(ctx: Context) {
         try {
-            val dates = ctx.bodyValidator<SimpleOrderDTO>()
+            val newOrder = ctx.bodyValidator<SimpleOrderDTO>()
                 .check({ obj -> !obj.assistanceId.toString().isNullOrBlank() }, "The assistant id was not loaded")
                 .check({ obj -> !obj.street.isNullOrBlank() }, "The address street was not loaded")
                 .check(
@@ -23,17 +23,17 @@ class OrderController(private val orderDAO: HibernateOrderDAO, private val assis
                 )
                 .check({ obj -> !obj.city.isNullOrBlank() }, "The city was not loaded")
                 .check({ obj -> !obj.province.isNullOrBlank() }, "The province id was not loaded")
-                .check({ obj -> !obj.phoneNumber.toString().isNullOrBlank() }, "The phonenumber was not loaded").get()
+                .check({ obj -> !obj.phoneNumber.isNullOrBlank() }, "The phone number was not loaded").get()
             val assistance = runTrx {
-                assistanceDAO.find(dates.assistanceId)
+                assistanceDAO.find(newOrder.assistanceId)
             }
             val simpleOrder = Order(
-                assistance.id!!,
-                dates.street,
-                dates.betweenStreets,
-                dates.city,
-                dates.province,
-                dates.phoneNumber,
+                assistance,
+                newOrder.street,
+                newOrder.betweenStreets,
+                newOrder.city,
+                newOrder.province,
+                newOrder.phoneNumber,
                 assistance.costPerKm,
                 assistance.fixedCost,
                 Status.PENDING_APPROVAL
@@ -49,22 +49,22 @@ class OrderController(private val orderDAO: HibernateOrderDAO, private val assis
 
     fun updateOrder(ctx: Context) {
         try {
-            val dates = ctx.bodyValidator<SimpleUpdateOrderDTO>()
+            val orderToUpdate = ctx.bodyValidator<SimpleUpdateOrderDTO>()
                 .check({ obj -> !obj.orderId.toString().isNullOrBlank() }, "The order id was not loaded")
                 .check({ obj -> !obj.status.isNullOrBlank() }, "The status was not loaded")
                 .check({ obj -> !obj.password.isNullOrBlank() }, "The password was not loaded")
                 .check({ obj -> obj.password == "0303456" }, "Wrong password").get()
-            var orderToUpdate = runTrx {
-                orderDAO.find(dates.orderId)
+            var order = runTrx {
+                orderDAO.find(orderToUpdate.orderId)
             }
-            orderToUpdate.status = enumValueOf(dates.status)
-            val order = runTrx {
-                orderDAO.update(orderToUpdate)
+            order.status = enumValueOf(orderToUpdate.status)
+            val updatedOrder = runTrx {
+                orderDAO.update(order)
             }
-            ctx.json(order)
+            ctx.json(updatedOrder)
         } catch (e: java.lang.RuntimeException) {
             throw BadRequestResponse(e.message!!)
-        }catch (e: java.lang.NullPointerException) {
+        } catch (e: java.lang.NullPointerException) {
             throw BadRequestResponse(e.message!!)
         }
     }
