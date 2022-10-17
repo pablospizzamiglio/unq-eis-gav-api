@@ -3,6 +3,7 @@ package repository
 import dao.HibernateAssistanceDAO
 import dao.HibernateDataDAO
 import dao.HibernateOrderDAO
+import dao.HibernateUserDAO
 import entity.*
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
@@ -15,7 +16,9 @@ class HibernateDAOOrderTest {
     fun `basic order update`() {
         val assistanceDAO = HibernateAssistanceDAO()
         val orderDAO = HibernateOrderDAO()
-        val userOne = User(
+        val userDAO = HibernateUserDAO()
+
+        val newUser = User(
             "Test",
             "McTest",
             "ASSISTANCE",
@@ -23,39 +26,44 @@ class HibernateDAOOrderTest {
             "55556666"
         )
 
-        val assistanceOne = Assistance(Kind.LARGE, 250.0, 500.0, userOne)
+        val persistedUser = runTrx {
+            userDAO.save(newUser)
+        }
 
-        val assOne = runTrx {
-            assistanceDAO.save(assistanceOne)
+        val newAssistance = Assistance(Kind.LARGE, 250.0, 500.0, persistedUser)
+
+        val persistedAssistance = runTrx {
+            assistanceDAO.save(newAssistance)
         }
 
         val order = Order(
-            assOne,
+            persistedAssistance,
             "q",
             "q",
             "q",
             "q",
             "1111111111",
-            assOne.costPerKm,
-            assOne.fixedCost,
-            Status.PENDING_APPROVAL
+            persistedAssistance.costPerKm,
+            persistedAssistance.fixedCost,
+            Status.PENDING_APPROVAL,
+            persistedUser
         )
 
-        val orderOne = runTrx {
+        val persistedOrder = runTrx {
             orderDAO.save(order)
         }
 
-        orderOne.status = Status.COMPLETE
+        persistedOrder.status = Status.COMPLETE
 
         runTrx {
-            orderDAO.update(orderOne)
+            orderDAO.update(persistedOrder)
         }
 
-        val orderToUpdate = runTrx {
-            orderDAO.find(orderOne.id!!)
+        val updatedOrder = runTrx {
+            orderDAO.find(persistedOrder.id!!)
         }
 
-        Assertions.assertThat(orderToUpdate.status).isEqualTo(Status.COMPLETE)
+        Assertions.assertThat(updatedOrder.status).isEqualTo(Status.COMPLETE)
     }
 
 
