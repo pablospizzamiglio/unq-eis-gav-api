@@ -1,19 +1,20 @@
 package entity
 
-import java.util.UUID
+import java.util.*
 import javax.persistence.*
 
-public enum class Kind{
+enum class Kind {
     SMALL,
     MEDIUM,
     LARGE,
     BATTERY,
     START_UP
 }
+
 @Entity
 @Table(name = "assistance")
 class Assistance(
-    @Enumerated (EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     val kind: Kind,
     val costPerKm: Double,
     val fixedCost: Double,
