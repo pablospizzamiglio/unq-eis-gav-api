@@ -7,6 +7,7 @@ import entity.User
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
 import transaction.TransactionRunner.runTrx
+import java.util.*
 
 class UserController(private val userDAO: HibernateUserDAO) {
 
@@ -37,10 +38,10 @@ class UserController(private val userDAO: HibernateUserDAO) {
 
     fun findUser(ctx: Context) {
         try {
-            val userToFind = ctx.bodyValidator<UserIdDTO>()
-                .check({ obj -> !obj.toString().isNullOrBlank() }, "The id user was not loaded").get()
+            val id = ctx.pathParam("id")
+            val userId = UUID.fromString(id)
             val user = runTrx {
-                userDAO.find(userToFind.id)
+                userDAO.find(userId)
             }
             ctx.json(user)
         } catch (e: java.lang.RuntimeException) {

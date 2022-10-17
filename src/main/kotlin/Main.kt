@@ -40,7 +40,9 @@ fun main() {
         }
         ApiBuilder.path("user") {
             ApiBuilder.post(userController::createUser)
-            ApiBuilder.get(userController::findUser)
+            ApiBuilder.path("{id}") {
+                ApiBuilder.get(userController::findUser)
+            }
         }
     }
 
