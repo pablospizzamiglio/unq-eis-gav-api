@@ -15,10 +15,9 @@ class Validator {
     }
 
     fun containsSpecialCharacter(str: String?): Boolean {
-        val regexCaracterSpecial = ("(?=.*[-+_!@#$%^&*.,?{}]).+$")
-        val special: Pattern = Pattern.compile(regexCaracterSpecial)
+        val regexCharacterSpecial = ("(?=.*[-+_!@#$%^&*.,?{}]).+$")
+        val special: Pattern = Pattern.compile(regexCharacterSpecial)
         if (str == null) {
-            println("No")
             return false
         }
         val mSpecial: Matcher = special.matcher(str)
