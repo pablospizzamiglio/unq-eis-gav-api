@@ -2,16 +2,19 @@ package api.controllers
 
 import api.dtos.SimpleOrderDTO
 import api.dtos.SimpleUpdateOrderDTO
-import dao.HibernateAssistanceDAO
-import dao.HibernateOrderDAO
-import dao.HibernateUserDAO
 import entity.Order
 import entity.Status
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
-import transaction.TransactionRunner.runTrx
+import services.AssistanceServiceImpl
+import services.OrderServiceImpl
+import services.UserServiceImpl
 
-class OrderController(private val orderDAO: HibernateOrderDAO, private val assistanceDAO: HibernateAssistanceDAO, private val userDAO: HibernateUserDAO) {
+class OrderController(
+    private val orderService: OrderServiceImpl,
+    private val assistanceService: AssistanceServiceImpl,
+    private val userService: UserServiceImpl
+) {
 
     fun generateOrder(ctx: Context) {
         try {
@@ -27,23 +30,21 @@ class OrderController(private val orderDAO: HibernateOrderDAO, private val assis
                 .check({ obj -> !obj.phoneNumber.isNullOrBlank() }, "The phone number was not loaded")
                 .check({ obj -> obj.userId != null }, "The user id was not loaded")
                 .get()
-            val order = runTrx {
-                val assistance = assistanceDAO.find(newOrderRequest.assistanceId)
-                val user = userDAO.find(newOrderRequest.userId)
-                val newOrder = Order(
-                    assistance,
-                    newOrderRequest.street,
-                    newOrderRequest.betweenStreets,
-                    newOrderRequest.city,
-                    newOrderRequest.province,
-                    newOrderRequest.phoneNumber,
-                    assistance.costPerKm,
-                    assistance.fixedCost,
-                    Status.PENDING_APPROVAL,
-                    user,
-                )
-                orderDAO.save(newOrder)
-            }
+            val user = userService.find(newOrderRequest.userId)
+            val assistance = assistanceService.find(newOrderRequest.assistanceId)
+            val newOrder = Order(
+                assistance,
+                newOrderRequest.street,
+                newOrderRequest.betweenStreets,
+                newOrderRequest.city,
+                newOrderRequest.province,
+                newOrderRequest.phoneNumber,
+                assistance.costPerKm,
+                assistance.fixedCost,
+                Status.PENDING_APPROVAL,
+                user,
+            )
+            val order = orderService.save(newOrder)
             ctx.json(order)
         } catch (e: java.lang.RuntimeException) {
             throw BadRequestResponse(e.message!!)
@@ -57,13 +58,9 @@ class OrderController(private val orderDAO: HibernateOrderDAO, private val assis
                 .check({ obj -> !obj.status.isNullOrBlank() }, "The status was not loaded")
                 .check({ obj -> !obj.password.isNullOrBlank() }, "The password was not loaded")
                 .check({ obj -> obj.password == "0303456" }, "Wrong password").get()
-            var order = runTrx {
-                orderDAO.find(orderToUpdate.orderId)
-            }
+            var order = orderService.find(orderToUpdate.orderId)
             order.status = enumValueOf(orderToUpdate.status)
-            val updatedOrder = runTrx {
-                orderDAO.update(order)
-            }
+            val updatedOrder = orderService.update(order)
             ctx.json(updatedOrder)
         } catch (e: java.lang.RuntimeException) {
             throw BadRequestResponse(e.message!!)

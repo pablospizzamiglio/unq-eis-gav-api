@@ -8,19 +8,22 @@ import dao.HibernateUserDAO
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.core.util.Header
-import io.javalin.core.validation.ValidationException
 import io.javalin.http.BadRequestResponse
-import io.javalin.http.HttpCode
 import io.javalin.http.NotFoundResponse
+import services.AssistanceServiceImpl
+import services.OrderServiceImpl
+import services.UserServiceImpl
 
 fun main() {
     val assistanceDAO = HibernateAssistanceDAO()
     val orderDAO = HibernateOrderDAO()
     val userDAO = HibernateUserDAO()
-
-    val assistanceController = AssistanceController(assistanceDAO)
-    val orderController = OrderController(orderDAO, assistanceDAO, userDAO)
-    val userController = UserController(userDAO)
+    val userService = UserServiceImpl(userDAO)
+    val orderService = OrderServiceImpl(orderDAO)
+    val assistanceService = AssistanceServiceImpl(assistanceDAO)
+    val assistanceController = AssistanceController(assistanceService)
+    val orderController = OrderController(orderService, assistanceService, userService)
+    val userController = UserController(userService)
 
     val app = Javalin.create() {
         it.defaultContentType = "application/json"
