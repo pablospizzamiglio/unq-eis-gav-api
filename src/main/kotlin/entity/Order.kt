@@ -15,13 +15,13 @@ enum class Status {
 class Order(
     @ManyToOne(cascade = [CascadeType.ALL])
     val assistance: Assistance,
-    val street: String,
-    val betweenStreets: String,
-    val city: String,
-    val province: String,
-    val phoneNumber: String,
-    val costPerKm: Double,
-    val fixedCost: Double,
+    var street: String,
+    var betweenStreets: String,
+    var city: String,
+    var province: String,
+    var phoneNumber: String,
+    var costPerKm: Double,
+    var fixedCost: Double,
     @Enumerated(EnumType.STRING)
     var status: Status,
     @ManyToOne(cascade = [CascadeType.ALL])

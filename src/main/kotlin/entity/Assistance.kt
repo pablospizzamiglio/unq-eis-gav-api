@@ -15,9 +15,9 @@ enum class Kind {
 @Table(name = "assistance")
 class Assistance(
     @Enumerated(EnumType.STRING)
-    val kind: Kind,
-    val costPerKm: Double,
-    val fixedCost: Double,
+    var kind: Kind,
+    var costPerKm: Double,
+    var fixedCost: Double,
     @OneToOne(cascade = [CascadeType.ALL])
     val user: User
 ) : AbstractJpaPersistable<UUID>()
