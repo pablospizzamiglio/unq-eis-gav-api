@@ -22,7 +22,7 @@ fun main() {
     val orderController = OrderController()
     val userController = UserController()
 
-    val app = Javalin.create() {
+    val app = Javalin.create {
         it.defaultContentType = "application/json"
         it.enableCorsForAllOrigins()
     }.before {
