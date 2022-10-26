@@ -1,7 +1,6 @@
 package dao
 
 import entity.Order
+import javax.persistence.EntityManager
 
-class HibernateOrderDAO : HibernateDAO<Order>(Order::class.java) {
-
-}
+class HibernateOrderDAO(entityManager: EntityManager) : HibernateDAO<Order>(Order::class.java, entityManager)

@@ -1,13 +1,12 @@
 package dao
 
 import entity.Assistance
-import transaction.HibernateTransaction
+import javax.persistence.EntityManager
 
-class HibernateAssistanceDAO : HibernateDAO<Assistance>(Assistance::class.java) {
+class HibernateAssistanceDAO(entityManager: EntityManager) : HibernateDAO<Assistance>(Assistance::class.java, entityManager) {
     fun findAllByKind(kind: String): List<Assistance> {
-        val session = HibernateTransaction.currentSession
         val hql = "select p from Assistance p WHERE p.kind = '$kind'"
-        val query = session.createQuery(hql, Assistance::class.java)
-        return query.list()
+        val query = entityManager.createQuery(hql, Assistance::class.java)
+        return query.resultList
     }
 }

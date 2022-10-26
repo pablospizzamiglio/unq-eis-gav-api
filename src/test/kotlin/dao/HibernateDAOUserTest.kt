@@ -1,18 +1,39 @@
-package repository
+package dao
 
-import dao.HibernateDataDAO
-import dao.HibernateUserDAO
 import entity.User
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import services.DataServiceImpl
-import transaction.TransactionRunner.runTrx
+import org.junit.jupiter.api.*
 import java.util.*
+import javax.persistence.EntityManager
+import javax.persistence.EntityManagerFactory
+import javax.persistence.Persistence
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HibernateDAOUserTest {
+    private lateinit var entityManagerFactory: EntityManagerFactory
+    private lateinit var entityManager: EntityManager
+    private lateinit var userDAO: HibernateUserDAO
+
+    @BeforeAll
+    fun setUpBeforeAll() {
+        entityManagerFactory = Persistence.createEntityManagerFactory("GAV")
+    }
+
+    @BeforeEach
+    fun setUp() {
+        entityManager = entityManagerFactory.createEntityManager()
+        entityManager.transaction.begin()
+
+        userDAO = HibernateUserDAO(entityManager)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        entityManager.transaction.rollback()
+        entityManager.close()
+    }
+
     @Test
     fun `basic entity checks`() {
         val newUser = User(
@@ -25,10 +46,7 @@ class HibernateDAOUserTest {
         val hashCodeBefore = newUser.hashCode()
         val userSet = hashSetOf(newUser)
 
-        val userDAO = HibernateUserDAO()
-        val user = runTrx {
-            userDAO.save(newUser)
-        }
+        val user = userDAO.save(newUser)
 
         val hashCodeAfter = user.hashCode()
 
@@ -36,9 +54,7 @@ class HibernateDAOUserTest {
         assertContains(userSet, user)
         assertEquals(hashCodeBefore, hashCodeAfter)
 
-        val recoveredUser = runTrx {
-            userDAO.find(user.id!!)
-        }
+        val recoveredUser = userDAO.find(user.id!!)
 
         assertEquals(user, recoveredUser)
     }
@@ -53,10 +69,7 @@ class HibernateDAOUserTest {
             "55556666"
         )
 
-        val userDAO = HibernateUserDAO()
-        val user = runTrx {
-            userDAO.save(newUser)
-        }
+        val user = userDAO.save(newUser)
 
         assertEquals(user.debts, 0.0)
     }
@@ -71,22 +84,17 @@ class HibernateDAOUserTest {
             "55556666"
         )
 
-        val userDAO = HibernateUserDAO()
-        val user = runTrx {
-            userDAO.save(newUser)
-        }
+        val user = userDAO.save(newUser)
 
-        val userFind = runTrx { userDAO.find(user.id!!) }
+        val userFind = userDAO.find(user.id!!)
 
         assertEquals(user, userFind)
     }
 
     @Test
     fun `check if it returns error when not finding user`() {
-        val userDAO = HibernateUserDAO()
-
         assertThrows<RuntimeException> {
-            runTrx { userDAO.find(UUID.fromString("5f700ac8-0efe-4683-9798-6595c52d1668")) }
+            userDAO.find(UUID.fromString("5f700ac8-0efe-4683-9798-6595c52d1668"))
         }
     }
 
@@ -100,20 +108,11 @@ class HibernateDAOUserTest {
             "55556666"
         )
 
-        val userDAO = HibernateUserDAO()
-        var user = runTrx {
-            userDAO.save(newUser)
-        }
-
+        val user = userDAO.save(newUser)
         user.firstName = "German"
-        runTrx { userDAO.update(user) }
-        val userFind = runTrx { userDAO.find(user.id!!) }
+        userDAO.update(user)
+        val userFind = userDAO.find(user.id!!)
 
         assertEquals(userFind.firstName, "German")
-    }
-
-    @AfterEach
-    fun cleanup() {
-        DataServiceImpl(HibernateDataDAO()).clear()
     }
 }

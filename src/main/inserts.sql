@@ -7,7 +7,7 @@ TRUNCATE TABLE gav.user;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- USER INSERT
-INSERT INTO gav.user (id, emailAddress, firstName, lastName, telephoneNumber, type, debts)
+INSERT INTO gav.user (id, email_address, first_name, last_name, telephone_number, type, debts)
 VALUES
     (UUID_TO_BIN('5f700ac8-0efe-4683-9798-6595c52d1668'), 'pedro@gmail.com', 'Pedro', 'Escamoso', '1145671234', 'ASSISTANCE', 0.0),
     (UUID_TO_BIN('c2d0f55a-59a5-4291-b936-a03f9bb7c932'), 'elpatron@gmail.com', 'Pablo', 'Escobar', '1166607770', 'ASSISTANCE', 0.0),
@@ -21,7 +21,7 @@ VALUES
     (UUID_TO_BIN('27db7c25-d928-4d5b-b62a-073f26a98db8'), 'marvel@gmail.com', 'Stan', 'Lee', '1132167878', 'ASSISTANCE', 0.0);
 
 -- ASSISTANCE INSERT
-INSERT INTO gav.assistance (id, costPerKm, fixedCost, user_id, kind)
+INSERT INTO gav.assistance (id, cost_per_km, fixed_cost, user_id, kind)
 values
     (UUID_TO_BIN('f61cafec-511f-4be7-a6a8-554dced3ffab'), 250.0, 1000.0, UUID_TO_BIN('5f700ac8-0efe-4683-9798-6595c52d1668'),'START_UP'),
     (UUID_TO_BIN('f1b834e6-9e0c-42ac-b505-c6b4199796c0'), 200.0, 1120.0, UUID_TO_BIN('c2d0f55a-59a5-4291-b936-a03f9bb7c932'),'SMALL'),
