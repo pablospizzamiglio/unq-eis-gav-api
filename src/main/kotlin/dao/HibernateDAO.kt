@@ -1,40 +1,34 @@
 package dao
 
-import transaction.HibernateTransaction
 import java.util.UUID
+import javax.persistence.EntityManager
 
-open class HibernateDAO<T>(private val entityType: Class<T>) {
+open class HibernateDAO<T>(private val entityType: Class<T>, protected val entityManager: EntityManager) {
     open fun save(entity: T): T {
-        val session = HibernateTransaction.currentSession
-        session.save(entity)
+        entityManager.persist(entity)
+        entityManager.flush()
         return entity
     }
 
     open fun update(entity: T) {
-        val session = HibernateTransaction.currentSession
-        session.update(entity)
+        entityManager.merge(entity)
+        entityManager.flush()
     }
 
     open fun find(id: UUID): T {
-        val session = HibernateTransaction.currentSession
-        return session.get(entityType, id) ?: throw RuntimeException("The entity $entityType with id $id does not exist")
+        return entityManager.find(entityType, id) ?: throw RuntimeException("The entity $entityType with id $id does not exist")
     }
 
     open fun findAll(): List<T> {
-        val session = HibernateTransaction.currentSession
-
         val hql = "select p from ${entityType.simpleName} p"
-        val query = session.createQuery(hql, entityType)
+        val query = entityManager.createQuery(hql, entityType)
 
         return query.resultList
     }
 
     open fun count(): Int {
-        val session = HibernateTransaction.currentSession
-
         val hql = "select count (p) from ${entityType.simpleName} p"
-        val query = session.createQuery(hql)
-
-        return (query.uniqueResult() as Long).toInt()
+        val query = entityManager.createQuery(hql)
+        return (query.singleResult as Long).toInt()
     }
 }

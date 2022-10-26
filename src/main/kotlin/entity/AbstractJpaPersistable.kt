@@ -1,10 +1,8 @@
 package entity
 
-import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.domain.Persistable
 import org.springframework.data.util.ProxyUtils
 import java.io.Serializable
-import java.util.UUID
 import javax.persistence.*
 
 
