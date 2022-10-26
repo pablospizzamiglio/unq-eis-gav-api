@@ -6,6 +6,7 @@ import entity.User
 import entityManager
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
+import services.UserServiceImpl
 import java.util.*
 
 class UserController {
@@ -20,9 +21,11 @@ class UserController {
                 .check({ obj -> obj.telephoneNumber.isNotBlank() }, "The telephone number was not loaded").get()
 
             val userDAO = HibernateUserDAO(ctx.entityManager)
+            val userService = UserServiceImpl(userDAO)
+
             ctx.entityManager.transaction.begin()
 
-            val user = userDAO.save(
+            val user = userService.save(
                 User(
                     newUser.firstName,
                     newUser.lastName,
@@ -36,7 +39,6 @@ class UserController {
 
             ctx.json(user)
         } catch (e: java.lang.RuntimeException) {
-            ctx.entityManager.transaction.rollback()
             throw BadRequestResponse(e.message!!)
         }
     }
@@ -47,8 +49,9 @@ class UserController {
             val userId = UUID.fromString(id)
 
             val userDAO = HibernateUserDAO(ctx.entityManager)
+            val userService = UserServiceImpl(userDAO)
 
-            val user = userDAO.find(userId)
+            val user = userService.find(userId)
             ctx.json(user)
         } catch (e: java.lang.RuntimeException) {
             throw BadRequestResponse(e.message!!)

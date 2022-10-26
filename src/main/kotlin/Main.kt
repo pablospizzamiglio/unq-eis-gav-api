@@ -2,7 +2,6 @@ import api.controllers.AssistanceController
 import api.controllers.OrderController
 import api.controllers.UserController
 import api.dtos.ErrorDTO
-import dao.HibernateAssistanceDAO
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.core.util.Header

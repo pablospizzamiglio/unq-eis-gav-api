@@ -10,6 +10,9 @@ import entity.Status
 import entityManager
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
+import services.AssistanceServiceImpl
+import services.OrderServiceImpl
+import services.UserServiceImpl
 
 class OrderController {
 
@@ -27,10 +30,15 @@ class OrderController {
             val assistanceDAO = HibernateAssistanceDAO(ctx.entityManager)
             val userDAO = HibernateUserDAO(ctx.entityManager)
             val orderDAO = HibernateOrderDAO(ctx.entityManager)
+
+            val assistanceService = AssistanceServiceImpl(assistanceDAO)
+            val userService = UserServiceImpl(userDAO)
+            val orderService = OrderServiceImpl(orderDAO)
+
             ctx.entityManager.transaction.begin()
 
-            val assistance = assistanceDAO.find(newOrderRequest.assistanceId)
-            val user = userDAO.find(newOrderRequest.userId)
+            val assistance = assistanceService.find(newOrderRequest.assistanceId)
+            val user = userService.find(newOrderRequest.userId)
             val newOrder = Order(
                 assistance,
                 newOrderRequest.street,
@@ -43,7 +51,7 @@ class OrderController {
                 Status.PENDING_APPROVAL,
                 user,
             )
-            val order = orderDAO.save(newOrder)
+            val order = orderService.save(newOrder)
 
             ctx.entityManager.transaction.commit()
             ctx.json(order)
@@ -62,11 +70,13 @@ class OrderController {
                 .check({ obj -> obj.password == "0303456" }, "Wrong password").get()
 
             val orderDAO = HibernateOrderDAO(ctx.entityManager)
+            val orderService = OrderServiceImpl(orderDAO)
+
             ctx.entityManager.transaction.begin()
 
-            var order = orderDAO.find(orderToUpdate.orderId)
+            var order = orderService.find(orderToUpdate.orderId)
             order.status = enumValueOf(orderToUpdate.status)
-            val updatedOrder = orderDAO.update(order)
+            val updatedOrder = orderService.update(order)
 
             ctx.entityManager.transaction.commit()
 
