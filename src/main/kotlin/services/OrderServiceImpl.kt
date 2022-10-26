@@ -32,7 +32,7 @@ class OrderServiceImpl(
     }
 
     fun updateOrderStatus(orderUpdateRequest: OrderUpdateRequestDTO): Order {
-        var order = orderDAO.find(orderUpdateRequest.orderId!!)
+        val order = orderDAO.find(orderUpdateRequest.orderId!!)
         order.status = OrderStatus.valueOf(orderUpdateRequest.status!!)
         return orderDAO.update(order)
     }
