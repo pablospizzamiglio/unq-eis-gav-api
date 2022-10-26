@@ -1,5 +1,6 @@
 package services
 
+import api.controllers.Validator
 import api.dtos.OrderCreateRequestDTO
 import api.dtos.OrderUpdateRequestDTO
 import dao.HibernateAssistanceDAO
@@ -13,7 +14,12 @@ class OrderServiceImpl(
     private val assistanceDAO: HibernateAssistanceDAO,
     private val userDAO: HibernateUserDAO
 ) {
+    private val validator = Validator()
     fun createOrder(orderCreateRequest: OrderCreateRequestDTO): Order {
+        if (validator.containsSpecialCharacter(orderCreateRequest.street)) {
+            throw RuntimeException("Street can not contain special characters")
+        }
+
         val assistance = assistanceDAO.find(orderCreateRequest.assistanceId!!)
         val user = userDAO.find(orderCreateRequest.userId!!)
         val newOrder = Order(

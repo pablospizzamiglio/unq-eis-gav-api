@@ -1,6 +1,5 @@
 package api.controllers
 
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 class Validator {
@@ -12,9 +11,8 @@ class Validator {
         if (str == null) {
             return false
         }
-        val regexCharacterSpecial = ("(?=.*[-+_!@#$%^&*.,?{}]).+$")
-        val special: Pattern = Pattern.compile(regexCharacterSpecial)
-        val mSpecial: Matcher = special.matcher(str)
-        return mSpecial.matches()
+        val pattern = Pattern.compile("[!@#$%&*()_+=|<>?{}\\[\\]~-]", Pattern.CASE_INSENSITIVE)
+        val matcher = pattern.matcher(str)
+        return matcher.find()
     }
 }
