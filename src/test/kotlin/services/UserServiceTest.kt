@@ -1,16 +1,40 @@
 package services
 
-import dao.HibernateDataDAO
 import dao.HibernateUserDAO
 import entity.User
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import kotlin.test.assertEquals
+import org.junit.jupiter.api.*
+import javax.persistence.EntityManager
+import javax.persistence.EntityManagerFactory
+import javax.persistence.Persistence
 import kotlin.test.assertTrue
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserServiceTest {
-    private val userServiceImpl = UserServiceImpl(HibernateUserDAO())
+    private lateinit var entityManagerFactory: EntityManagerFactory
+    private lateinit var entityManager: EntityManager
+    private lateinit var userDAO: HibernateUserDAO
+    private lateinit var userService: UserServiceImpl
+
+
+    @BeforeAll
+    fun setUpBeforeAll() {
+        entityManagerFactory = Persistence.createEntityManagerFactory("GAV")
+    }
+
+    @BeforeEach
+    fun setUp() {
+        entityManager = entityManagerFactory.createEntityManager()
+        entityManager.transaction.begin()
+
+        userDAO = HibernateUserDAO(entityManager)
+        userService = UserServiceImpl(userDAO)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        entityManager.transaction.rollback()
+        entityManager.close()
+    }
 
     @Test
     fun `firstname with special character rejected`() {
@@ -22,15 +46,10 @@ class UserServiceTest {
             "1122223333"
         )
 
-        assertThrows<RuntimeException> { userServiceImpl.save(user) }
+        assertThrows<RuntimeException> { userService.save(user) }
 
-        val users = userServiceImpl.findAll()
+        val users = userService.findAll()
 
         assertTrue { null == users.find { user: User -> user.emailAddress == "lisa.simpson@email.com" } }
-    }
-
-    @AfterEach
-    fun cleanup() {
-        DataServiceImpl(HibernateDataDAO()).clear()
     }
 }
