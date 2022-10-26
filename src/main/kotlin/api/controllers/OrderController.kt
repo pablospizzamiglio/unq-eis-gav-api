@@ -10,6 +10,7 @@ import io.javalin.core.validation.ValidationException
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
 import services.OrderServiceImpl
+import java.util.*
 
 class OrderController {
     fun createOrder(ctx: Context) {
@@ -66,6 +67,23 @@ class OrderController {
             throw e
         } catch (e: Exception) {
             ctx.entityManager.transaction.rollback()
+            throw BadRequestResponse(e.message!!)
+        }
+    }
+
+    fun findOrder(ctx: Context) {
+        try {
+            val id = ctx.pathParam("id")
+            val orderId = UUID.fromString(id)
+
+            val assistanceDAO = HibernateAssistanceDAO(ctx.entityManager)
+            val userDAO = HibernateUserDAO(ctx.entityManager)
+            val orderDAO = HibernateOrderDAO(ctx.entityManager)
+            val orderService = OrderServiceImpl(orderDAO, assistanceDAO, userDAO)
+
+            val order = orderService.findOrder(orderId)
+            ctx.json(order)
+        } catch (e: java.lang.RuntimeException) {
             throw BadRequestResponse(e.message!!)
         }
     }

@@ -7,6 +7,7 @@ import dao.HibernateOrderDAO
 import dao.HibernateUserDAO
 import entity.Order
 import entity.OrderStatus
+import java.util.*
 
 class OrderServiceImpl(
     private val orderDAO: HibernateOrderDAO,
@@ -35,5 +36,9 @@ class OrderServiceImpl(
         var order = orderDAO.find(orderUpdateRequest.orderId!!)
         order.status = OrderStatus.valueOf(orderUpdateRequest.status!!)
         return orderDAO.update(order)
+    }
+
+    fun findOrder(orderId: UUID): Order {
+        return orderDAO.find(orderId)
     }
 }
