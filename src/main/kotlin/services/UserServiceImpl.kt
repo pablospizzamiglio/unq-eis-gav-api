@@ -1,12 +1,19 @@
 package services
 
 import api.dtos.UserCreateRequestDTO
+import api.controllers.Validator
 import dao.HibernateUserDAO
 import entity.User
 import java.util.*
 
-class UserServiceImpl(private val userDAO: HibernateUserDAO) {
+class UserServiceImpl(
+    private val userDAO: HibernateUserDAO,
+    private val validator: Validator = Validator()
+) {
     fun createUser(userCreateRequest: UserCreateRequestDTO): User {
+        if (validator.containsSpecialCharacter(userCreateRequest.firstName)) {
+            throw RuntimeException("First Name can not contain special characters")
+        }
         val user = User(
             userCreateRequest.firstName,
             userCreateRequest.lastName,
@@ -19,5 +26,9 @@ class UserServiceImpl(private val userDAO: HibernateUserDAO) {
 
     fun findByUserId(orderId: UUID): User {
         return userDAO.find(orderId)
+    }
+
+    fun findAll(): List<User> {
+        return userDAO.findAll()
     }
 }
