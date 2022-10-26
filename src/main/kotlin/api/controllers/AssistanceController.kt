@@ -3,6 +3,7 @@ package api.controllers
 import api.dtos.ResultAssistanceDTO
 import dao.HibernateAssistanceDAO
 import entityManager
+import io.javalin.core.validation.ValidationException
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
 import services.AssistanceServiceImpl
@@ -24,7 +25,9 @@ class AssistanceController {
                 val assistanceRecords = assistanceService.findAllByKind(kind)
                 val result = ResultAssistanceDTO.fromModel(assistanceRecords)
                 ctx.json(result)
-            } catch (e: BadRequestResponse) {
+            } catch (e: ValidationException) {
+                throw e
+            } catch (e: Exception) {
                 throw BadRequestResponse(e.message!!)
             }
         }

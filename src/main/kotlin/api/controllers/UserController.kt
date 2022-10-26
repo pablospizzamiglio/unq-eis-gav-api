@@ -3,6 +3,7 @@ package api.controllers
 import api.dtos.UserCreateRequestDTO
 import dao.HibernateUserDAO
 import entityManager
+import io.javalin.core.validation.ValidationException
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
 import services.UserServiceImpl
@@ -27,7 +28,10 @@ class UserController {
             ctx.entityManager.transaction.commit()
 
             ctx.json(user)
-        } catch (e: RuntimeException) {
+        } catch (e: ValidationException) {
+            ctx.entityManager.transaction.rollback()
+            throw e
+        } catch (e: Exception) {
             ctx.entityManager.transaction.rollback()
             throw BadRequestResponse(e.message!!)
         }
@@ -44,7 +48,7 @@ class UserController {
             val user = userService.findByUserId(userId)
 
             ctx.json(user)
-        } catch (e: RuntimeException) {
+        } catch (e: Exception) {
             throw BadRequestResponse(e.message!!)
         }
     }

@@ -34,7 +34,10 @@ class OrderController {
             ctx.entityManager.transaction.commit()
 
             ctx.json(order)
-        } catch (e: RuntimeException) {
+        } catch (e: ValidationException) {
+            ctx.entityManager.transaction.rollback()
+            throw e
+        } catch (e: Exception) {
             ctx.entityManager.transaction.rollback()
             throw BadRequestResponse(e.message!!)
         }
@@ -61,7 +64,7 @@ class OrderController {
         } catch (e: ValidationException) {
             ctx.entityManager.transaction.rollback()
             throw e
-        } catch (e: RuntimeException) {
+        } catch (e: Exception) {
             ctx.entityManager.transaction.rollback()
             throw BadRequestResponse(e.message!!)
         }
