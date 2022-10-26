@@ -1,5 +1,6 @@
 package services
 
+import api.dtos.UserCreateRequestDTO
 import dao.HibernateUserDAO
 import entity.User
 import org.junit.jupiter.api.*
@@ -38,18 +39,18 @@ class UserServiceTest {
 
     @Test
     fun `firstname with special character rejected`() {
-        val user = User(
-            "Li" + "$" + "a",
+        val user = UserCreateRequestDTO(
+            "Li\$a",
             "Simpson",
             "CLIENT",
             "lisa.simpson@email.com",
             "1122223333"
         )
 
-        assertThrows<RuntimeException> { userService.save(user) }
+        assertThrows<RuntimeException> { userService.createUser(user) }
 
         val users = userService.findAll()
 
-        assertTrue { null == users.find { user: User -> user.emailAddress == "lisa.simpson@email.com" } }
+        assertTrue { users.isEmpty() }
     }
 }

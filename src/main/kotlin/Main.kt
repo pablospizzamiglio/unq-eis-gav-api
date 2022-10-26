@@ -3,10 +3,12 @@ import api.controllers.OrderController
 import api.controllers.UserController
 import api.dtos.ErrorDTO
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder
+import io.javalin.apibuilder.ApiBuilder.*
 import io.javalin.core.util.Header
+import io.javalin.core.validation.ValidationException
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
+import io.javalin.http.HttpCode
 import io.javalin.http.NotFoundResponse
 import javax.persistence.EntityManager
 import javax.persistence.EntityManagerFactory
@@ -20,7 +22,7 @@ fun main() {
     val orderController = OrderController()
     val userController = UserController()
 
-    val app = Javalin.create() {
+    val app = Javalin.create {
         it.defaultContentType = "application/json"
         it.enableCorsForAllOrigins()
     }.before {
@@ -31,17 +33,17 @@ fun main() {
     app.start(7070)
 
     app.routes {
-        ApiBuilder.path("assistances") {
-            ApiBuilder.get(assistanceController::findAll)
+        path("assistances") {
+            get(assistanceController::findAll)
         }
-        ApiBuilder.path("order") {
-            ApiBuilder.post(orderController::generateOrder)
-            ApiBuilder.put(orderController::updateOrder)
+        path("order") {
+            post(orderController::createOrder)
+            put(orderController::updateOrder)
         }
-        ApiBuilder.path("user") {
-            ApiBuilder.post(userController::createUser)
-            ApiBuilder.path("{id}") {
-                ApiBuilder.get(userController::findUser)
+        path("user") {
+            post(userController::createUser)
+            path("{id}") {
+                get(userController::findUser)
             }
         }
     }
@@ -51,6 +53,16 @@ fun main() {
     }
     app.exception(BadRequestResponse::class.java) { e, ctx ->
         ctx.status(e.status).json(ErrorDTO(e.message!!))
+    }
+    app.exception(ValidationException::class.java) { e, ctx ->
+        ctx.status(HttpCode.BAD_REQUEST)
+        if (e.errors.values.any { errors -> errors.any { it.message == "DESERIALIZATION_FAILED" } }) {
+            ctx.json(ErrorDTO("Malformed request"))
+        } else if (e.errors.keys.contains("REQUEST_BODY")) {
+            ctx.json(ErrorDTO.fromErrors(e.errors["REQUEST_BODY"]!!))
+        } else {
+            ctx.json(e.errors)
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 package api.dtos
 
-class UserDTO(
+class UserCreateRequestDTO(
     val firstName: String,
     val lastName: String,
     val type: String,
@@ -14,8 +14,8 @@ class UserDTO(
             type: String,
             emailAddress: String,
             telephoneNumber: String
-        ): UserDTO {
-            return UserDTO(firstName, lastName, type, emailAddress, telephoneNumber)
+        ): UserCreateRequestDTO {
+            return UserCreateRequestDTO(firstName, lastName, type, emailAddress, telephoneNumber)
         }
     }
 }
