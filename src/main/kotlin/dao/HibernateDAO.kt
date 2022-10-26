@@ -10,9 +10,10 @@ open class HibernateDAO<T>(private val entityType: Class<T>, protected val entit
         return entity
     }
 
-    open fun update(entity: T) {
+    open fun update(entity: T): T {
         entityManager.merge(entity)
         entityManager.flush()
+        return entity
     }
 
     open fun find(id: UUID): T {
@@ -22,7 +23,6 @@ open class HibernateDAO<T>(private val entityType: Class<T>, protected val entit
     open fun findAll(): List<T> {
         val hql = "select p from ${entityType.simpleName} p"
         val query = entityManager.createQuery(hql, entityType)
-
         return query.resultList
     }
 

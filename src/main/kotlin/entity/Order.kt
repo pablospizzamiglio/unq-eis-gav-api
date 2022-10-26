@@ -3,7 +3,7 @@ package entity
 import java.util.*
 import javax.persistence.*
 
-enum class Status {
+enum class OrderStatus {
     PENDING_APPROVAL,
     IN_PROGRESS,
     CANCELLED,
@@ -23,7 +23,7 @@ class Order(
     var costPerKm: Double,
     var fixedCost: Double,
     @Enumerated(EnumType.STRING)
-    var status: Status,
+    var status: OrderStatus,
     @ManyToOne(cascade = [CascadeType.ALL])
     val user: User
 ) : AbstractJpaPersistable<UUID>()

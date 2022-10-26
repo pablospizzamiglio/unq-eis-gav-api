@@ -1,8 +1,7 @@
 package api.controllers
 
-import api.dtos.UserDTO
+import api.dtos.UserCreateRequestDTO
 import dao.HibernateUserDAO
-import entity.User
 import entityManager
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
@@ -13,32 +12,23 @@ class UserController {
 
     fun createUser(ctx: Context) {
         try {
-            val newUser = ctx.bodyValidator<UserDTO>()
-                .check({ obj -> obj.firstName.isNotBlank() }, "The first name was not loaded")
-                .check({ obj -> obj.lastName.isNotBlank() }, "The last name was not loaded")
-                .check({ obj -> obj.type.isNotBlank() }, "The type was not loaded")
-                .check({ obj -> obj.emailAddress.isNotBlank() }, "The email not loaded")
-                .check({ obj -> obj.telephoneNumber.isNotBlank() }, "The telephone number was not loaded").get()
+            val userCreateRequest = ctx.bodyValidator<UserCreateRequestDTO>()
+                .check({ obj -> obj.firstName.isNotBlank() }, "First Name can not be empty")
+                .check({ obj -> obj.lastName.isNotBlank() }, "Last Name can not be empty")
+                .check({ obj -> obj.type.isNotBlank() }, "Type can not be empty")
+                .check({ obj -> obj.emailAddress.isNotBlank() }, "Email can not be empty")
+                .check({ obj -> obj.telephoneNumber.isNotBlank() }, "Telephone Number can not be empty").get()
 
             val userDAO = HibernateUserDAO(ctx.entityManager)
             val userService = UserServiceImpl(userDAO)
 
             ctx.entityManager.transaction.begin()
-
-            val user = userService.save(
-                User(
-                    newUser.firstName,
-                    newUser.lastName,
-                    newUser.type,
-                    newUser.emailAddress,
-                    newUser.telephoneNumber
-                )
-            )
-
+            val user = userService.createUser(userCreateRequest)
             ctx.entityManager.transaction.commit()
 
             ctx.json(user)
-        } catch (e: java.lang.RuntimeException) {
+        } catch (e: RuntimeException) {
+            ctx.entityManager.transaction.rollback()
             throw BadRequestResponse(e.message!!)
         }
     }
@@ -51,9 +41,10 @@ class UserController {
             val userDAO = HibernateUserDAO(ctx.entityManager)
             val userService = UserServiceImpl(userDAO)
 
-            val user = userService.find(userId)
+            val user = userService.findByUserId(userId)
+
             ctx.json(user)
-        } catch (e: java.lang.RuntimeException) {
+        } catch (e: RuntimeException) {
             throw BadRequestResponse(e.message!!)
         }
     }
