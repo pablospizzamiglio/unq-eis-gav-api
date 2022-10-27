@@ -19,6 +19,18 @@ class OrderServiceImpl(
         if (validator.containsSpecialCharacter(orderCreateRequest.street)) {
             throw RuntimeException("Street can not contain special characters")
         }
+        if (validator.containsSpecialCharacter(orderCreateRequest.betweenStreets)) {
+            throw RuntimeException("Between streets can not contain special characters")
+        }
+        if (validator.containsSpecialCharacter(orderCreateRequest.city) || validator.containsNumbers(orderCreateRequest.city)) {
+            throw RuntimeException("City can not contain special characters or numbers")
+        }
+        if (validator.containsSpecialCharacter(orderCreateRequest.province) || validator.containsNumbers(orderCreateRequest.province)) {
+            throw RuntimeException("Province can not contain special characters or numbers")
+        }
+        if (!validator.isAllNumbers(orderCreateRequest.phoneNumber)) {
+            throw RuntimeException("Phone Number must be all numbers")
+        }
 
         val assistance = assistanceDAO.find(orderCreateRequest.assistanceId!!)
         val user = userDAO.find(orderCreateRequest.userId!!)
