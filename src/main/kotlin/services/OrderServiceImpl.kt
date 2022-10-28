@@ -22,10 +22,10 @@ class OrderServiceImpl(
         if (validator.containsSpecialCharacter(orderCreateRequest.betweenStreets)) {
             throw RuntimeException("Between streets can not contain special characters")
         }
-        if (validator.containsSpecialCharacter(orderCreateRequest.city) || validator.containsNumbers(orderCreateRequest.city)) {
+        if (validator.containsSpecialCharacter(orderCreateRequest.city) || validator.containsNumber(orderCreateRequest.city)) {
             throw RuntimeException("City can not contain special characters or numbers")
         }
-        if (validator.containsSpecialCharacter(orderCreateRequest.province) || validator.containsNumbers(orderCreateRequest.province)) {
+        if (validator.containsSpecialCharacter(orderCreateRequest.province) || validator.containsNumber(orderCreateRequest.province)) {
             throw RuntimeException("Province can not contain special characters or numbers")
         }
         if (!validator.isAllNumbers(orderCreateRequest.phoneNumber)) {

@@ -2,7 +2,6 @@ package services
 
 import api.dtos.UserCreateRequestDTO
 import dao.HibernateUserDAO
-import entity.User
 import org.junit.jupiter.api.*
 import javax.persistence.EntityManager
 import javax.persistence.EntityManagerFactory
@@ -55,7 +54,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun firstNameWithNumbersRiseERROR() {
+    fun `firstname with numbers rejected`() {
         val user = UserCreateRequestDTO(
             "Lu1s",
             "Bello",
@@ -72,7 +71,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun lastNameWithSpecialsCharsRiseERROR() {
+    fun `lastname with special character rejected`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bell++o",
@@ -89,7 +88,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun lastNameWithNumbersRiseERROR() {
+    fun `lastname with numbers rejected`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bell05",
@@ -106,7 +105,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun invalidEMailERROR_1() {
+    fun `email with special character before the @ rejected`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bello",
@@ -123,7 +122,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun invalidEMailERROR_2() {
+    fun `email without com,etc rejected`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bello",
@@ -138,8 +137,9 @@ class UserServiceTest {
 
         assertTrue { users.isEmpty() }
     }
+
     @Test
-    fun invalidEMailERROR_3() {
+    fun `email without @ rejected`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bello",
@@ -156,7 +156,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun inavlidUserType_ERROR() {
+    fun `user with invalid type rejected`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bello",
@@ -171,8 +171,9 @@ class UserServiceTest {
 
         assertTrue { users.isEmpty() }
     }
+
     @Test
-    fun saveAValidUser() {
+    fun `save valid user`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bello",

@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 class Validator {
     private val specialCharacterPattern = Pattern.compile("[¡!@#$%&*()_+=|<>¿?{}.\\[\\]~-]", Pattern.CASE_INSENSITIVE)
 
-    fun containsNumbers(toCheck: String?): Boolean {
+    fun containsNumber(toCheck: String?): Boolean {
         if (toCheck == null) {
             return false
         }
