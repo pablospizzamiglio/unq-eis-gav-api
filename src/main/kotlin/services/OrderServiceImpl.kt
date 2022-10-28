@@ -28,8 +28,8 @@ class OrderServiceImpl(
         if (validator.containsSpecialCharacter(orderCreateRequest.province) || validator.containsNumbers(orderCreateRequest.province)) {
             throw RuntimeException("Province can not contain special characters or numbers")
         }
-        if (!validator.isAllNumbers(orderCreateRequest.phoneNumber)) {
-            throw RuntimeException("Phone Number must be all numbers")
+        if (!validator.isAllNumbers(orderCreateRequest.phoneNumber) || orderCreateRequest.phoneNumber?.length != 10) {
+            throw RuntimeException("Phone Number must be all numbers and 10 digits long")
         }
 
         val assistance = assistanceDAO.find(orderCreateRequest.assistanceId!!)

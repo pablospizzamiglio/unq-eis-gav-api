@@ -198,4 +198,61 @@ class OrderServiceTest {
 
         assertTrue { orders.isEmpty() }
     }
+
+    @Test
+    fun `phone with non numeric characters rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 y 2",
+            "Springfield",
+            "Spr1ngfield",
+            "the number",
+            user.id
+        )
+
+        assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
+
+        val orders = orderDAO.findAll()
+
+        assertTrue { orders.isEmpty() }
+    }
+
+    @Test
+    fun `9 digit long phone number is rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 y 2",
+            "Springfield",
+            "Spr1ngfield",
+            "112222333",
+            user.id
+        )
+
+        assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
+
+        val orders = orderDAO.findAll()
+
+        assertTrue { orders.isEmpty() }
+    }
+
+    @Test
+    fun `11 digit long phone number is rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 y 2",
+            "Springfield",
+            "Spr1ngfield",
+            "11222233334",
+            user.id
+        )
+
+        assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
+
+        val orders = orderDAO.findAll()
+
+        assertTrue { orders.isEmpty() }
+    }
 }
