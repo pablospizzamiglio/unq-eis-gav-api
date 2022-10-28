@@ -1,5 +1,6 @@
 package services
 
+import api.controllers.Validator
 import api.dtos.OrderCreateRequestDTO
 import api.dtos.OrderUpdateRequestDTO
 import dao.HibernateAssistanceDAO
@@ -13,7 +14,24 @@ class OrderServiceImpl(
     private val assistanceDAO: HibernateAssistanceDAO,
     private val userDAO: HibernateUserDAO
 ) {
+    private val validator = Validator()
     fun createOrder(orderCreateRequest: OrderCreateRequestDTO): Order {
+        if (validator.containsSpecialCharacter(orderCreateRequest.street)) {
+            throw RuntimeException("Street can not contain special characters")
+        }
+        if (validator.containsSpecialCharacter(orderCreateRequest.betweenStreets)) {
+            throw RuntimeException("Between streets can not contain special characters")
+        }
+        if (validator.containsSpecialCharacter(orderCreateRequest.city) || validator.containsNumbers(orderCreateRequest.city)) {
+            throw RuntimeException("City can not contain special characters or numbers")
+        }
+        if (validator.containsSpecialCharacter(orderCreateRequest.province) || validator.containsNumbers(orderCreateRequest.province)) {
+            throw RuntimeException("Province can not contain special characters or numbers")
+        }
+        if (!validator.isAllNumbers(orderCreateRequest.phoneNumber)) {
+            throw RuntimeException("Phone Number must be all numbers")
+        }
+
         val assistance = assistanceDAO.find(orderCreateRequest.assistanceId!!)
         val user = userDAO.find(orderCreateRequest.userId!!)
         val newOrder = Order(
@@ -32,7 +50,7 @@ class OrderServiceImpl(
     }
 
     fun updateOrderStatus(orderUpdateRequest: OrderUpdateRequestDTO): Order {
-        var order = orderDAO.find(orderUpdateRequest.orderId!!)
+        val order = orderDAO.find(orderUpdateRequest.orderId!!)
         order.status = OrderStatus.valueOf(orderUpdateRequest.status!!)
         return orderDAO.update(order)
     }
