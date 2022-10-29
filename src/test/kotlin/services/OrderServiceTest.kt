@@ -4,10 +4,7 @@ import api.dtos.OrderCreateRequestDTO
 import dao.HibernateAssistanceDAO
 import dao.HibernateOrderDAO
 import dao.HibernateUserDAO
-import entity.Assistance
-import entity.Kind
-import entity.OrderStatus
-import entity.User
+import entity.*
 import org.junit.jupiter.api.*
 import javax.persistence.EntityManager
 import javax.persistence.EntityManagerFactory
@@ -46,7 +43,7 @@ class OrderServiceTest {
         val newUser = User(
             "Test",
             "McTest",
-            "ASSISTANCE",
+            UserType.ASSISTANCE,
             "email@email.com",
             "55556666"
         )
@@ -189,6 +186,63 @@ class OrderServiceTest {
             "Springfield",
             "Spr1ngfield",
             "1122223333",
+            user.id
+        )
+
+        assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
+
+        val orders = orderDAO.findAll()
+
+        assertTrue { orders.isEmpty() }
+    }
+
+    @Test
+    fun `phone with non numeric characters rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 y 2",
+            "Springfield",
+            "Spr1ngfield",
+            "the number",
+            user.id
+        )
+
+        assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
+
+        val orders = orderDAO.findAll()
+
+        assertTrue { orders.isEmpty() }
+    }
+
+    @Test
+    fun `9 digit long phone number is rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 y 2",
+            "Springfield",
+            "Spr1ngfield",
+            "112222333",
+            user.id
+        )
+
+        assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
+
+        val orders = orderDAO.findAll()
+
+        assertTrue { orders.isEmpty() }
+    }
+
+    @Test
+    fun `11 digit long phone number is rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 y 2",
+            "Springfield",
+            "Spr1ngfield",
+            "11222233334",
             user.id
         )
 

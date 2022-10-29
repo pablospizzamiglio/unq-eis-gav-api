@@ -37,6 +37,22 @@ class UserServiceTest {
     }
 
     @Test
+    fun `create user`() {
+        val user = UserCreateRequestDTO(
+            "Luis",
+            "Bello",
+            "CLIENT",
+            "luisbello@email.com",
+            "5555555555"
+        )
+
+        userService.createUser(user)
+        val users = userService.findAll()
+
+        assertTrue { users.size == 1 }
+    }
+
+    @Test
     fun `firstname with special character rejected`() {
         val user = UserCreateRequestDTO(
             "Li\$a",
@@ -122,7 +138,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `email without com,etc rejected`() {
+    fun `email without com rejected`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bello",
@@ -170,21 +186,5 @@ class UserServiceTest {
         val users = userService.findAll()
 
         assertTrue { users.isEmpty() }
-    }
-
-    @Test
-    fun `save valid user`() {
-        val user = UserCreateRequestDTO(
-            "Luis",
-            "Bello",
-            "CLIENT",
-            "luisbello@email.com",
-            "5555555555"
-        )
-
-        userService.createUser(user)
-        val users = userService.findAll()
-
-        assertTrue { users.size == 1 }
     }
 }

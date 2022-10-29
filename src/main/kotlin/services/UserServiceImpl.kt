@@ -4,6 +4,7 @@ import api.controllers.Validator
 import api.dtos.UserCreateRequestDTO
 import dao.HibernateUserDAO
 import entity.User
+import entity.UserType
 import java.util.*
 
 class UserServiceImpl(private val userDAO: HibernateUserDAO) {
@@ -23,7 +24,7 @@ class UserServiceImpl(private val userDAO: HibernateUserDAO) {
             throw RuntimeException("Last Name can not contain numbers")
         }
         if (!validator.isValidEMail(userCreateRequest.emailAddress)) {
-            throw RuntimeException("Is not a valid E-mail adress format")
+            throw RuntimeException("E-Mail Address is not valid")
         }
         if (!validator.isValidUserType(userCreateRequest.type)) {
             throw RuntimeException("Type of user is not valid")
@@ -31,7 +32,7 @@ class UserServiceImpl(private val userDAO: HibernateUserDAO) {
         val user = User(
             userCreateRequest.firstName,
             userCreateRequest.lastName,
-            userCreateRequest.type,
+            UserType.valueOf(userCreateRequest.type),
             userCreateRequest.emailAddress,
             userCreateRequest.telephoneNumber
         )
