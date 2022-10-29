@@ -10,7 +10,6 @@ import services.UserServiceImpl
 import java.util.*
 
 class UserController {
-
     fun createUser(ctx: Context) {
         try {
             val userCreateRequest = ctx.bodyValidator<UserCreateRequestDTO>()

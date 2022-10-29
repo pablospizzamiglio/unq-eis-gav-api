@@ -83,7 +83,7 @@ class OrderController {
 
             val order = orderService.findOrder(orderId)
             ctx.json(order)
-        } catch (e: java.lang.RuntimeException) {
+        } catch (e: Exception) {
             throw BadRequestResponse(e.message!!)
         }
     }

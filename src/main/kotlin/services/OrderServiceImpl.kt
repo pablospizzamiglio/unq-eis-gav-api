@@ -26,7 +26,10 @@ class OrderServiceImpl(
         if (validator.containsSpecialCharacter(orderCreateRequest.city) || validator.containsNumber(orderCreateRequest.city)) {
             throw RuntimeException("City can not contain special characters or numbers")
         }
-        if (validator.containsSpecialCharacter(orderCreateRequest.province) || validator.containsNumber(orderCreateRequest.province)) {
+        if (validator.containsSpecialCharacter(orderCreateRequest.province) || validator.containsNumber(
+                orderCreateRequest.province
+            )
+        ) {
             throw RuntimeException("Province can not contain special characters or numbers")
         }
         if (!validator.isAllNumbers(orderCreateRequest.phoneNumber) || orderCreateRequest.phoneNumber?.length != 10) {
