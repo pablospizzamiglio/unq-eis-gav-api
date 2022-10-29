@@ -13,6 +13,21 @@ class UserServiceImpl(private val userDAO: HibernateUserDAO) {
         if (validator.containsSpecialCharacter(userCreateRequest.firstName)) {
             throw RuntimeException("First Name can not contain special characters")
         }
+        if (validator.containsNumber(userCreateRequest.firstName)) {
+            throw RuntimeException("First Name can not contain numbers")
+        }
+        if (validator.containsSpecialCharacter(userCreateRequest.lastName)) {
+            throw RuntimeException("Last Name can not contain special characters")
+        }
+        if (validator.containsNumber(userCreateRequest.lastName)) {
+            throw RuntimeException("Last Name can not contain numbers")
+        }
+        if (!validator.isValidEMail(userCreateRequest.emailAddress)) {
+            throw RuntimeException("Is not a valid E-mail adress format")
+        }
+        if (!validator.isValidUserType(userCreateRequest.type)) {
+            throw RuntimeException("Type of user is not valid")
+        }
         val user = User(
             userCreateRequest.firstName,
             userCreateRequest.lastName,

@@ -39,6 +39,9 @@ fun main() {
         path("order") {
             post(orderController::createOrder)
             put(orderController::updateOrder)
+            path("{id}") {
+                get(orderController::findOrder)
+            }
         }
         path("user") {
             post(userController::createUser)
