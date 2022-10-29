@@ -4,10 +4,7 @@ import api.dtos.OrderCreateRequestDTO
 import dao.HibernateAssistanceDAO
 import dao.HibernateOrderDAO
 import dao.HibernateUserDAO
-import entity.Assistance
-import entity.Kind
-import entity.OrderStatus
-import entity.User
+import entity.*
 import org.junit.jupiter.api.*
 import javax.persistence.EntityManager
 import javax.persistence.EntityManagerFactory
@@ -46,7 +43,7 @@ class OrderServiceTest {
         val newUser = User(
             "Test",
             "McTest",
-            "ASSISTANCE",
+            UserType.ASSISTANCE,
             "email@email.com",
             "55556666"
         )

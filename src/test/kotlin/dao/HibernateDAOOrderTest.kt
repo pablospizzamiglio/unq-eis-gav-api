@@ -42,7 +42,7 @@ class HibernateDAOOrderTest {
         val newUser = User(
             "Test",
             "McTest",
-            "ASSISTANCE",
+            UserType.ASSISTANCE,
             "email@email.com",
             "55556666"
         )

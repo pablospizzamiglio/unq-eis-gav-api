@@ -11,7 +11,7 @@ enum class OrderStatus {
 }
 
 @Entity
-@Table(name = "orderassistances")
+@Table(name = "assistance_order")
 class Order(
     @ManyToOne(cascade = [CascadeType.ALL])
     val assistance: Assistance,

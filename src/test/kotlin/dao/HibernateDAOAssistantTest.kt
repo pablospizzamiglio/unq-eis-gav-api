@@ -3,6 +3,7 @@ package dao
 import entity.Assistance
 import entity.Kind
 import entity.User
+import entity.UserType
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.*
 import javax.persistence.EntityManager
@@ -39,14 +40,14 @@ class HibernateDAOAssistantTest {
         val userOne = User(
             "Test",
             "McTest",
-            "ASSISTANCE",
+            UserType.ASSISTANCE,
             "email@email.com",
             "55556666"
         )
         val userTwo = User(
             "German",
             "McRonalds",
-            "ASSISTANCE",
+            UserType.ASSISTANCE,
             "german@email.com",
             "0303456664"
         )
@@ -73,14 +74,14 @@ class HibernateDAOAssistantTest {
         val userOne = User(
             "Test",
             "McTest",
-            "ASSISTANCE",
+            UserType.ASSISTANCE,
             "email@email.com",
             "55556666"
         )
         val userTwo = User(
             "German",
             "McRonalds",
-            "ASSISTANCE",
+            UserType.ASSISTANCE,
             "german@email.com",
             "0303456664"
         )

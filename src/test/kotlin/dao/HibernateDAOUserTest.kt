@@ -1,6 +1,7 @@
 package dao
 
 import entity.User
+import entity.UserType
 import org.junit.jupiter.api.*
 import java.util.*
 import javax.persistence.EntityManager
@@ -39,7 +40,7 @@ class HibernateDAOUserTest {
         val newUser = User(
             "Test",
             "McTest",
-            "CLIENT",
+            UserType.CLIENT,
             "email@email.com",
             "55556666"
         )
@@ -64,7 +65,7 @@ class HibernateDAOUserTest {
         val newUser = User(
             "Test",
             "McTest",
-            "CLIENT",
+            UserType.CLIENT,
             "email@email.com",
             "55556666"
         )
@@ -79,7 +80,7 @@ class HibernateDAOUserTest {
         val newUser = User(
             "Test",
             "McTest",
-            "CLIENT",
+            UserType.CLIENT,
             "email@email.com",
             "55556666"
         )
@@ -103,7 +104,7 @@ class HibernateDAOUserTest {
         val newUser = User(
             "Test",
             "McTest",
-            "CLIENT",
+            UserType.CLIENT,
             "email@email.com",
             "55556666"
         )
