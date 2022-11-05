@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    application
     kotlin("jvm") version "1.7.10"
     kotlin("plugin.jpa") version "1.7.10"
     kotlin("plugin.allopen") version "1.7.10"
@@ -59,4 +60,28 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "17"
         freeCompilerArgs = listOf("-Xjsr305=strict")
     }
+}
+
+val main = "MainKt"
+
+application {
+    mainClass.set(main)
+}
+
+tasks.jar {
+    enabled = false
+
+    manifest {
+        attributes["Main-Class"] = main
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from(sourceSets.main.get().output)
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get()
+            .filter { it.name.endsWith("jar") }
+            .map { zipTree(it) }
+    })
 }
