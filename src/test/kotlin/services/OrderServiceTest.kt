@@ -45,7 +45,7 @@ class OrderServiceTest {
         val newUserForAssistance = User(
             "Pablo",
             "Escobar",
-            UserType.CLIENT,
+            UserType.ASSISTANCE,
             "elpatron@gmail.com",
             "1166607770"
         )
