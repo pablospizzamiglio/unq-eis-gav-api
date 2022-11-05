@@ -42,11 +42,11 @@ class OrderServiceTest {
         orderService = OrderServiceImpl(orderDAO, assistanceDAO, userDAO)
 
         val newUser = User(
-            "Test",
-            "McTest",
-            UserType.ASSISTANCE,
-            "email@email.com",
-            "55556666"
+            "Lisa",
+            "Simpsons",
+            UserType.CLIENT,
+            "lisa.simpson@email.com",
+            "1122223333"
         )
         val newAssistance = Assistance(Kind.LARGE, 250.0, 500.0, newUser)
 
@@ -256,16 +256,6 @@ class OrderServiceTest {
 
     @Test
     fun `cancel an order that has already been canceled is rejected`() {
-        val newUser = User(
-            "Lisa",
-            "Simpsons",
-            UserType.CLIENT,
-            "lisa.simpson@email.com",
-            "1122223333"
-        )
-
-        val userRegistered = userDAO.save(newUser)
-
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -273,7 +263,7 @@ class OrderServiceTest {
             "Springfield",
             "Springfield",
             "1122223333",
-            userRegistered.id
+            user.id
         )
 
         val order = orderService.createOrder(orderCreateRequest)
@@ -289,16 +279,36 @@ class OrderServiceTest {
 
     @Test
     fun `update a canceled order to IN_PROGRESS is rejected`() {
-        val newUser = User(
-            "Lisa",
-            "Simpsons",
-            UserType.CLIENT,
-            "lisa.simpson@email.com",
-            "1122223333"
+       val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            user.id
         )
 
-        val userRegistered = userDAO.save(newUser)
+        val order = orderService.createOrder(orderCreateRequest)
+        val orderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "CANCELLED",
+            "0303456"
+        )
 
+        orderService.updateOrderStatus(orderUpdateRequest)
+
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "IN_PROGRESS",
+            "0303456"
+        )
+
+        assertThrows<RuntimeException> { orderService.updateOrderStatus(newOrderUpdateRequest) }
+    }
+
+    @Test
+    fun `update a IN_PROGRESS order to IN_PROGRESS is rejected`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -306,13 +316,13 @@ class OrderServiceTest {
             "Springfield",
             "Springfield",
             "1122223333",
-            userRegistered.id
+            user.id
         )
 
         val order = orderService.createOrder(orderCreateRequest)
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "CANCELLED",
+            "IN_PROGRESS",
             "0303456"
         )
 
