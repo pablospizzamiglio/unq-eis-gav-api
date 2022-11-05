@@ -55,6 +55,12 @@ class OrderServiceImpl(
 
     fun updateOrderStatus(orderUpdateRequest: OrderUpdateRequestDTO): Order {
         val order = orderDAO.find(orderUpdateRequest.orderId!!)
+        if (orderUpdateRequest.status == "CANCELLED" && order.status == OrderStatus.CANCELLED) {
+            throw RuntimeException("Can not update the order. It's already cancelled")
+        }
+        if (orderUpdateRequest.status == "IN_PROGRESS" && order.status == OrderStatus.CANCELLED) {
+            throw RuntimeException("Orders cannot be updated after they have been cancelled")
+        }
         order.status = OrderStatus.valueOf(orderUpdateRequest.status!!)
         return orderDAO.update(order)
     }

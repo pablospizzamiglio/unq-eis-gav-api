@@ -1,6 +1,7 @@
 package services
 
 import api.dtos.OrderCreateRequestDTO
+import api.dtos.OrderUpdateRequestDTO
 import dao.HibernateAssistanceDAO
 import dao.HibernateOrderDAO
 import dao.HibernateUserDAO
@@ -251,5 +252,78 @@ class OrderServiceTest {
         val orders = orderDAO.findAll()
 
         assertTrue { orders.isEmpty() }
+    }
+
+    @Test
+    fun `cancel an order that has already been canceled is rejected`() {
+        val newUser = User(
+            "Lisa",
+            "Simpsons",
+            UserType.CLIENT,
+            "lisa.simpson@email.com",
+            "1122223333"
+        )
+
+        val userRegistered = userDAO.save(newUser)
+
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userRegistered.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val orderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "CANCELLED",
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(orderUpdateRequest)
+        assertThrows<RuntimeException> { orderService.updateOrderStatus(orderUpdateRequest) }
+    }
+
+    @Test
+    fun `update a canceled order to IN_PROGRESS is rejected`() {
+        val newUser = User(
+            "Lisa",
+            "Simpsons",
+            UserType.CLIENT,
+            "lisa.simpson@email.com",
+            "1122223333"
+        )
+
+        val userRegistered = userDAO.save(newUser)
+
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userRegistered.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val orderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "CANCELLED",
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(orderUpdateRequest)
+
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "IN_PROGRESS",
+            "0303456"
+        )
+
+        assertThrows<RuntimeException> { orderService.updateOrderStatus(newOrderUpdateRequest) }
     }
 }
