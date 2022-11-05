@@ -1,10 +1,38 @@
 version: "3.9"
 
+# services:
+#   mysql:
+#     image: mysql:8.0.30
+#     ports:
+#       - 3306:3306
+#     environment:
+#       MYSQL_ROOT_PASSWORD: root
+#     command: mysqld --sql_mode=""
+
 services:
-  mysql:
+  api:
+    build: .
+    ports:
+      - "7070:7070"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=gav
+      - DB_USER=root
+      - DB_PASSWORD=root
+    depends_on:
+      - db
+    networks:
+      - gav
+  db:
     image: mysql:8.0.30
     ports:
-      - 3306:3306
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
     command: mysqld --sql_mode=""
+    networks:
+      - gav
+
+networks:
+  gav:
