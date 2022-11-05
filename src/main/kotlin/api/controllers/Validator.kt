@@ -45,7 +45,7 @@ class Validator {
 
     fun isValidUserType(typeName: String?): Boolean {
         if (typeName == null) {
-            false
+            return false
         }
         return UserType.values().any { it.name == typeName }
     }
