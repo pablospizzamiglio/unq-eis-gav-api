@@ -14,7 +14,7 @@
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <properties>
-            <property name="hibernate.archive.autodetection" value="class, hbm"/>
+            <property name="hibernate.archive.autodetect" value="class, hbm"/>
 
             <!-- Database driver -->
             <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
