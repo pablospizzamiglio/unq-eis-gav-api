@@ -44,7 +44,7 @@ class OrderServiceImpl(
             orderCreateRequest.betweenStreets!!,
             orderCreateRequest.city!!,
             orderCreateRequest.province!!,
-            orderCreateRequest.phoneNumber!!,
+            orderCreateRequest.phoneNumber,
             assistance.costPerKm,
             assistance.fixedCost,
             OrderStatus.PENDING_APPROVAL,
