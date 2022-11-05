@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="true" type="JetRunConfigurationType">
+    <envs>
+      <env name="DB_HOST" value="localhost" />
+    </envs>
+    <module name="unq-eis-gav-api" />
+    <option name="PASS_PARENT_ENVS" value="false" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

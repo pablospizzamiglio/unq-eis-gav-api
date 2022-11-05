@@ -10,13 +10,20 @@ import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
 import io.javalin.http.HttpCode
 import io.javalin.http.NotFoundResponse
+import java.util.Properties
 import javax.persistence.EntityManager
 import javax.persistence.EntityManagerFactory
 import javax.persistence.Persistence
 
 
 fun main() {
-    val entityManagerFactory = Persistence.createEntityManagerFactory("GAV")
+    val dbHost = System.getenv("DB_HOST")
+    val dbConnectionURL = "jdbc:mysql://$dbHost:3306/gav?createDatabaseIfNotExist=true&serverTimezone=UTC"
+
+    val properties = Properties()
+    properties.setProperty("hibernate.connection.url", dbConnectionURL)
+
+    val entityManagerFactory = Persistence.createEntityManagerFactory("GAV", properties)
 
     val assistanceController = AssistanceController()
     val orderController = OrderController()
