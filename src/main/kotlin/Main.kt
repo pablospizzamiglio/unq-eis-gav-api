@@ -40,17 +40,18 @@ fun main() {
     app.start(7070)
 
     app.routes {
-        path("assistances") {
+        path("assistance") {
             get(assistanceController::findAll)
         }
-        path("order") {
+        path("orders") {
+            get(orderController::findAll)
             post(orderController::createOrder)
             put(orderController::updateOrder)
             path("{id}") {
                 get(orderController::findOrder)
             }
         }
-        path("user") {
+        path("users") {
             post(userController::createUser)
             path("{id}") {
                 get(userController::findUser)

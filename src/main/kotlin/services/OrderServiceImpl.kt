@@ -68,4 +68,14 @@ class OrderServiceImpl(
     fun findOrder(orderId: UUID): Order {
         return orderDAO.find(orderId)
     }
+
+    fun findAll(status: String? = null): List<Order> {
+        val orders = if (status.isNullOrBlank()) {
+            orderDAO.findAll()
+        } else {
+            val orderStatus = status.split(",").map { OrderStatus.valueOf(it) }
+            orderDAO.findAllByStatus(orderStatus)
+        }
+        return orders
+    }
 }

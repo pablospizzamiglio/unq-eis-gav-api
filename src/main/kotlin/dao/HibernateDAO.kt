@@ -3,7 +3,7 @@ package dao
 import java.util.UUID
 import javax.persistence.EntityManager
 
-open class HibernateDAO<T>(private val entityType: Class<T>, protected val entityManager: EntityManager) {
+open class HibernateDAO<T>(protected val entityType: Class<T>, protected val entityManager: EntityManager) {
     open fun save(entity: T): T {
         entityManager.persist(entity)
         entityManager.flush()
