@@ -22,7 +22,8 @@ class OrderServiceTest {
     private lateinit var userDAO: HibernateUserDAO
     private lateinit var orderDAO: HibernateOrderDAO
     private lateinit var orderService: OrderServiceImpl
-    private lateinit var user: User
+    private lateinit var userAssistance: User
+    private lateinit var userClient: User
     private lateinit var assistance: Assistance
 
 
@@ -41,16 +42,24 @@ class OrderServiceTest {
         orderDAO = HibernateOrderDAO(entityManager)
         orderService = OrderServiceImpl(orderDAO, assistanceDAO, userDAO)
 
-        val newUser = User(
-            "Test",
-            "McTest",
+        val newUserForAssistance = User(
+            "Pablo",
+            "Escobar",
             UserType.ASSISTANCE,
-            "email@email.com",
-            "55556666"
+            "elpatron@gmail.com",
+            "1166607770"
         )
-        val newAssistance = Assistance(Kind.LARGE, 250.0, 500.0, newUser)
+        val newUserForClient = User(
+            "Lisa",
+            "Simpsons",
+            UserType.CLIENT,
+            "lisa.simpson@email.com",
+            "1122223333"
+        )
+        val newAssistance = Assistance(Kind.LARGE, 250.0, 500.0, newUserForAssistance)
 
-        user = userDAO.save(newUser)
+        userAssistance = userDAO.save(newUserForAssistance)
+        userClient = userDAO.save(newUserForClient)
         assistance = assistanceDAO.save(newAssistance)
     }
 
@@ -69,7 +78,7 @@ class OrderServiceTest {
             "Springfield",
             "Springfield",
             "1122223333",
-            user.id
+            userClient.id
         )
 
         val order = orderService.createOrder(orderCreateRequest)
@@ -92,7 +101,7 @@ class OrderServiceTest {
             "Springfield",
             "Springfield",
             "1122223333",
-            user.id
+            userClient.id
         )
 
         assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
@@ -111,7 +120,7 @@ class OrderServiceTest {
             "Springfield",
             "Springfield",
             "1122223333",
-            user.id
+            userClient.id
         )
 
         assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
@@ -130,7 +139,7 @@ class OrderServiceTest {
             "\$pringfield",
             "Springfield",
             "1122223333",
-            user.id
+            userClient.id
         )
 
         assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
@@ -149,7 +158,7 @@ class OrderServiceTest {
             "Spr1ngfield",
             "Springfield",
             "1122223333",
-            user.id
+            userClient.id
         )
 
         assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
@@ -168,7 +177,7 @@ class OrderServiceTest {
             "Springfield",
             "\$pringfield",
             "1122223333",
-            user.id
+            userClient.id
         )
 
         assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
@@ -187,7 +196,7 @@ class OrderServiceTest {
             "Springfield",
             "Spr1ngfield",
             "1122223333",
-            user.id
+            userClient.id
         )
 
         assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
@@ -206,7 +215,7 @@ class OrderServiceTest {
             "Springfield",
             "Spr1ngfield",
             "the number",
-            user.id
+            userClient.id
         )
 
         assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
@@ -225,7 +234,7 @@ class OrderServiceTest {
             "Springfield",
             "Spr1ngfield",
             "112222333",
-            user.id
+            userClient.id
         )
 
         assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
@@ -244,7 +253,7 @@ class OrderServiceTest {
             "Springfield",
             "Spr1ngfield",
             "11222233334",
-            user.id
+            userClient.id
         )
 
         assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
@@ -256,16 +265,6 @@ class OrderServiceTest {
 
     @Test
     fun `cancel an order that has already been canceled is rejected`() {
-        val newUser = User(
-            "Lisa",
-            "Simpsons",
-            UserType.CLIENT,
-            "lisa.simpson@email.com",
-            "1122223333"
-        )
-
-        val userRegistered = userDAO.save(newUser)
-
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -273,7 +272,7 @@ class OrderServiceTest {
             "Springfield",
             "Springfield",
             "1122223333",
-            userRegistered.id
+            userClient.id
         )
 
         val order = orderService.createOrder(orderCreateRequest)
@@ -289,16 +288,36 @@ class OrderServiceTest {
 
     @Test
     fun `update a canceled order to IN_PROGRESS is rejected`() {
-        val newUser = User(
-            "Lisa",
-            "Simpsons",
-            UserType.CLIENT,
-            "lisa.simpson@email.com",
-            "1122223333"
+       val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+           userClient.id
         )
 
-        val userRegistered = userDAO.save(newUser)
+        val order = orderService.createOrder(orderCreateRequest)
+        val orderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "CANCELLED",
+            "0303456"
+        )
 
+        orderService.updateOrderStatus(orderUpdateRequest)
+
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "IN_PROGRESS",
+            "0303456"
+        )
+
+        assertThrows<RuntimeException> { orderService.updateOrderStatus(newOrderUpdateRequest) }
+    }
+
+    @Test
+    fun `update a IN_PROGRESS order to IN_PROGRESS is rejected`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -306,13 +325,13 @@ class OrderServiceTest {
             "Springfield",
             "Springfield",
             "1122223333",
-            userRegistered.id
+            userClient.id
         )
 
         val order = orderService.createOrder(orderCreateRequest)
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "CANCELLED",
+            "IN_PROGRESS",
             "0303456"
         )
 

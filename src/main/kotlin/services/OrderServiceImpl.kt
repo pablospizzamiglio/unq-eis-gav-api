@@ -61,6 +61,9 @@ class OrderServiceImpl(
         if (orderUpdateRequest.status == "IN_PROGRESS" && order.status == OrderStatus.CANCELLED) {
             throw RuntimeException("Orders cannot be updated after they have been cancelled")
         }
+        if (orderUpdateRequest.status == "IN_PROGRESS" && order.status == OrderStatus.IN_PROGRESS) {
+            throw RuntimeException("Can not update the order. It's already in progress")
+        }
         order.status = OrderStatus.valueOf(orderUpdateRequest.status!!)
         return orderDAO.update(order)
     }
