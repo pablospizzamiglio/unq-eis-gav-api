@@ -1,6 +1,7 @@
 package api.controllers
 
 import api.dtos.OrderCreateRequestDTO
+import api.dtos.OrderListDTO
 import api.dtos.OrderUpdateRequestDTO
 import dao.HibernateAssistanceDAO
 import dao.HibernateOrderDAO
@@ -51,7 +52,7 @@ class OrderController {
                 .check({ obj -> !obj.status.isNullOrBlank() }, "Status can not be empty")
                 .check({ obj -> !obj.password.isNullOrBlank() && obj.password == "0303456" }, "Password is incorrect")
                 .get()
-            
+
             val assistanceDAO = HibernateAssistanceDAO(ctx.entityManager)
             val userDAO = HibernateUserDAO(ctx.entityManager)
             val orderDAO = HibernateOrderDAO(ctx.entityManager)
@@ -83,6 +84,26 @@ class OrderController {
 
             val order = orderService.findOrder(orderId)
             ctx.json(order)
+        } catch (e: Exception) {
+            throw BadRequestResponse(e.message!!)
+        }
+    }
+
+    fun findAll(ctx: Context) {
+        val status = ctx.queryParam("status")
+
+        try {
+            val assistanceDAO = HibernateAssistanceDAO(ctx.entityManager)
+            val userDAO = HibernateUserDAO(ctx.entityManager)
+            val orderDAO = HibernateOrderDAO(ctx.entityManager)
+            val orderService = OrderServiceImpl(orderDAO, assistanceDAO, userDAO)
+
+            val orders = orderService.findAll(status)
+            val result = OrderListDTO.fromModel(orders)
+
+            ctx.json(result)
+        } catch (e: ValidationException) {
+            throw e
         } catch (e: Exception) {
             throw BadRequestResponse(e.message!!)
         }
