@@ -47,6 +47,7 @@ class OrderServiceImpl(
             orderCreateRequest.phoneNumber,
             assistance.costPerKm,
             assistance.fixedCost,
+            null,
             OrderStatus.PENDING_APPROVAL,
             user,
         )
@@ -63,6 +64,29 @@ class OrderServiceImpl(
         }
         if (orderUpdateRequest.status == "IN_PROGRESS" && order.status == OrderStatus.IN_PROGRESS) {
             throw RuntimeException("Can not update the order. It's already in progress")
+        }
+        if (orderUpdateRequest.status == "IN_PROGRESS" && order.status == OrderStatus.COMPLETED) {
+            throw RuntimeException("Can not update the order. It's already in completed")
+        }
+        if (orderUpdateRequest.status == "CANCELLED" && order.status == OrderStatus.COMPLETED) {
+            throw RuntimeException("Can not update the order. It's already in completed")
+        }
+        if (orderUpdateRequest.status == "COMPLETED" && order.status == OrderStatus.COMPLETED) {
+            throw RuntimeException("Can not update the order. It's already in completed")
+        }
+        if (orderUpdateRequest.status == "COMPLETED" && order.status == OrderStatus.PENDING_APPROVAL) {
+            throw RuntimeException("Unable to complete an order pending approval")
+        }
+        if (orderUpdateRequest.status == "COMPLETED" && order.status == OrderStatus.CANCELLED) {
+            throw RuntimeException("Can not update the order. It's already in cancelled")
+        }
+        if(orderUpdateRequest.kmTraveled != null && orderUpdateRequest.kmTraveled!! < 0){
+            throw RuntimeException("You can not put negative kilometers")
+        }
+        if (order.status == OrderStatus.IN_PROGRESS){
+            order.kmTraveled = orderUpdateRequest.kmTraveled
+        } else{
+            order.kmTraveled = null
         }
         order.status = OrderStatus.valueOf(orderUpdateRequest.status!!)
         return orderDAO.update(order)

@@ -7,7 +7,7 @@ enum class OrderStatus {
     PENDING_APPROVAL,
     IN_PROGRESS,
     CANCELLED,
-    COMPLETE
+    COMPLETED
 }
 
 @Entity
@@ -22,6 +22,7 @@ class Order(
     var phoneNumber: String,
     var costPerKm: Double,
     var fixedCost: Double,
+    var kmTraveled: Int?,
     @Enumerated(EnumType.STRING)
     var status: OrderStatus,
     @ManyToOne(cascade = [CascadeType.ALL])
