@@ -8,6 +8,7 @@ import dao.HibernateOrderDAO
 import dao.HibernateUserDAO
 import entity.Order
 import entity.OrderStatus
+import entity.UserType
 import java.util.*
 
 class OrderServiceImpl(
@@ -38,6 +39,9 @@ class OrderServiceImpl(
 
         val assistance = assistanceDAO.find(orderCreateRequest.assistanceId!!)
         val user = userDAO.find(orderCreateRequest.userId!!)
+        if (user.type != UserType.CLIENT){
+            throw RuntimeException("User is not a customer")
+        }
         val newOrder = Order(
             assistance,
             orderCreateRequest.street!!,

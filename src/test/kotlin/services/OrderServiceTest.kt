@@ -7,6 +7,7 @@ import dao.HibernateOrderDAO
 import dao.HibernateUserDAO
 import entity.*
 import org.junit.jupiter.api.*
+import java.util.*
 import javax.persistence.EntityManager
 import javax.persistence.EntityManagerFactory
 import javax.persistence.Persistence
@@ -518,5 +519,42 @@ class OrderServiceTest {
         )
 
         assertThrows<RuntimeException> { orderService.updateOrderStatus(orderUpdateRequest2) }
+    }
+    @Test
+    fun `create order with userId not found`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            UUID.randomUUID()
+        )
+
+        assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
+    }
+
+    @Test
+    fun `create order with user Assistance is reject`() {
+        val newUserForAssistance = User(
+            "Pablo",
+            "Escobar",
+            UserType.ASSISTANCE,
+            "elpatron@gmail.com",
+            "1166607770"
+        )
+        val userTest = userDAO.save(newUserForAssistance)
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userTest.id
+        )
+
+        assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
     }
 }
