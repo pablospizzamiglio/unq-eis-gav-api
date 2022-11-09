@@ -90,6 +90,7 @@ class OrderServiceTest {
         assertEquals(orderCreateRequest.province, order.province)
         assertEquals(orderCreateRequest.userId, order.user.id)
         assertEquals(OrderStatus.PENDING_APPROVAL, order.status)
+        assertTrue(order.kmTraveled == null)
     }
 
     @Test
@@ -279,6 +280,7 @@ class OrderServiceTest {
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
             "CANCELLED",
+            null,
             "0303456"
         )
 
@@ -288,20 +290,21 @@ class OrderServiceTest {
 
     @Test
     fun `update a canceled order to IN_PROGRESS is rejected`() {
-       val orderCreateRequest = OrderCreateRequestDTO(
+        val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
             "1 and 2",
             "Springfield",
             "Springfield",
             "1122223333",
-           userClient.id
+            userClient.id
         )
 
         val order = orderService.createOrder(orderCreateRequest)
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
             "CANCELLED",
+            null,
             "0303456"
         )
 
@@ -310,6 +313,7 @@ class OrderServiceTest {
         val newOrderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
             "IN_PROGRESS",
+            null,
             "0303456"
         )
 
@@ -332,6 +336,7 @@ class OrderServiceTest {
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
             "IN_PROGRESS",
+            null,
             "0303456"
         )
 
@@ -340,9 +345,178 @@ class OrderServiceTest {
         val newOrderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
             "IN_PROGRESS",
+            null,
             "0303456"
         )
 
         assertThrows<RuntimeException> { orderService.updateOrderStatus(newOrderUpdateRequest) }
+    }
+
+    @Test
+    fun `update a IN_PROGRESS order to COMPLETED is rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "IN_PROGRESS",
+            null,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(newOrderUpdateRequest)
+
+        val orderUpdateRequest2 = OrderUpdateRequestDTO(
+            order.id,
+            "COMPLETED",
+            5,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(orderUpdateRequest2)
+
+        val newOrderUpdateRequest3 = OrderUpdateRequestDTO(
+            order.id,
+            "IN_PROGRESS",
+            null,
+            "0303456"
+        )
+
+        assertThrows<RuntimeException> { orderService.updateOrderStatus(newOrderUpdateRequest3) }
+    }
+
+    @Test
+    fun `update a cancelled order to COMPLETED is rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "IN_PROGRESS",
+            null,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(newOrderUpdateRequest)
+
+        val orderUpdateRequest2 = OrderUpdateRequestDTO(
+            order.id,
+            "COMPLETED",
+            5,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(orderUpdateRequest2)
+
+        val newOrderUpdateRequest3 = OrderUpdateRequestDTO(
+            order.id,
+            "CANCELLED",
+            5,
+            "0303456"
+        )
+
+        assertThrows<RuntimeException> { orderService.updateOrderStatus(newOrderUpdateRequest3) }
+    }
+
+    @Test
+    fun `update a COMPLETED order to PENDING_APPROVAL is rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val orderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "COMPLETED",
+            5,
+            "0303456"
+        )
+
+        assertThrows<RuntimeException> { orderService.updateOrderStatus(orderUpdateRequest) }
+    }
+
+    @Test
+    fun `update a COMPLETED order to CANCELLED is rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val orderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "CANCELLED",
+            null,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(orderUpdateRequest)
+        val orderUpdateRequest2 = OrderUpdateRequestDTO(
+            order.id,
+            "COMPLETED",
+            5,
+            "0303456"
+        )
+
+        assertThrows<RuntimeException> { orderService.updateOrderStatus(orderUpdateRequest2) }
+    }
+
+    @Test
+    fun `update with negative kilometers is rejected`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            "IN_PROGRESS",
+            null,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(newOrderUpdateRequest)
+
+        val orderUpdateRequest2 = OrderUpdateRequestDTO(
+            order.id,
+            "COMPLETED",
+            -5,
+            "0303456"
+        )
+
+        assertThrows<RuntimeException> { orderService.updateOrderStatus(orderUpdateRequest2) }
     }
 }

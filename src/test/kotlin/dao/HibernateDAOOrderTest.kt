@@ -62,18 +62,19 @@ class HibernateDAOOrderTest {
             "1111111111",
             persistedAssistance.costPerKm,
             persistedAssistance.fixedCost,
+            0,
             OrderStatus.PENDING_APPROVAL,
             persistedUser
         )
 
         val persistedOrder = orderDAO.save(order)
 
-        persistedOrder.status = OrderStatus.COMPLETE
+        persistedOrder.status = OrderStatus.COMPLETED
 
         orderDAO.update(persistedOrder)
 
         val updatedOrder = orderDAO.find(persistedOrder.id!!)
 
-        assertEquals(OrderStatus.COMPLETE, updatedOrder.status)
+        assertEquals(OrderStatus.COMPLETED, updatedOrder.status)
     }
 }
