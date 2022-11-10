@@ -1,7 +1,7 @@
 package dao
 
 import entity.Assistance
-import entity.Kind
+import entity.AssistanceKind
 import entity.User
 import entity.UserType
 import org.assertj.core.api.Assertions
@@ -9,12 +9,20 @@ import org.junit.jupiter.api.*
 import javax.persistence.EntityManager
 import javax.persistence.EntityManagerFactory
 import javax.persistence.Persistence
+import kotlin.test.assertContains
+import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HibernateDAOAssistantTest {
     private lateinit var entityManagerFactory: EntityManagerFactory
     private lateinit var entityManager: EntityManager
     private lateinit var assistanceDAO: HibernateAssistanceDAO
+    private lateinit var userOne: User
+    private lateinit var userTwo: User
+    private lateinit var assistanceOne: Assistance
+    private lateinit var assistanceTwo: Assistance
 
     @BeforeAll
     fun setUpBeforeAll() {
@@ -27,6 +35,24 @@ class HibernateDAOAssistantTest {
         entityManager.transaction.begin()
 
         assistanceDAO = HibernateAssistanceDAO(entityManager)
+
+        userOne = User(
+            "Test",
+            "McTest",
+            UserType.ASSISTANCE,
+            "email@email.com",
+            "55556666"
+        )
+        userTwo = User(
+            "German",
+            "McRonalds",
+            UserType.ASSISTANCE,
+            "german@email.com",
+            "0303456664"
+        )
+
+        assistanceOne = Assistance(AssistanceKind.LARGE, userOne, 250.0, 500.0, 150.0)
+        assistanceTwo = Assistance(AssistanceKind.SMALL, userTwo, 325.0, 425.0, 150.0)
     }
 
     @AfterEach
@@ -37,62 +63,31 @@ class HibernateDAOAssistantTest {
 
     @Test
     fun `basic assistance checks`() {
-        val userOne = User(
-            "Test",
-            "McTest",
-            UserType.ASSISTANCE,
-            "email@email.com",
-            "55556666"
-        )
-        val userTwo = User(
-            "German",
-            "McRonalds",
-            UserType.ASSISTANCE,
-            "german@email.com",
-            "0303456664"
-        )
+        val newAssistanceOne = assistanceDAO.save(assistanceOne)
 
-        val assistanceOne = Assistance(Kind.LARGE, 250.0, 500.0, userOne)
-        val assistanceTwo = Assistance(Kind.MEDIUM, 325.0, 425.0, userTwo)
-
-        val assOne = assistanceDAO.save(assistanceOne)
-        val assTwo = assistanceDAO.save(assistanceTwo)
-
-        Assertions.assertThat(userOne).isEqualTo(assOne.user)
-        Assertions.assertThat(userTwo).isEqualTo(assTwo.user)
+        assertEquals(assistanceOne.user, newAssistanceOne.user)
+        assertEquals(assistanceOne.kind, newAssistanceOne.kind)
+        assertEquals(assistanceOne.costPerKm, newAssistanceOne.costPerKm)
+        assertEquals(assistanceOne.fixedCost, newAssistanceOne.fixedCost)
+        assertEquals(assistanceOne.cancellationCost, newAssistanceOne.cancellationCost)
     }
 
     @Test
-    fun `wizard filtering by kind no data`() {
-        val assistanceRecords = assistanceDAO.findAllByKind("SMALL")
+    fun `filter by kind returns an empty list`() {
+        val assistanceRecords = assistanceDAO.findAllByKind(AssistanceKind.SMALL.toString())
 
-        Assertions.assertThat(assistanceRecords).isEmpty()
+        assertTrue { assistanceRecords.isEmpty() }
     }
 
     @Test
-    fun `wizard filtering by kind with data`() {
-        val userOne = User(
-            "Test",
-            "McTest",
-            UserType.ASSISTANCE,
-            "email@email.com",
-            "55556666"
-        )
-        val userTwo = User(
-            "German",
-            "McRonalds",
-            UserType.ASSISTANCE,
-            "german@email.com",
-            "0303456664"
-        )
+    fun `filter by kind returns a non-empty list`() {
+        val newAssistanceOne = assistanceDAO.save(assistanceOne)
+        val newAssistanceTwo = assistanceDAO.save(assistanceTwo)
 
-        val assistanceOne = Assistance(Kind.LARGE, 250.0, 500.0, userOne)
-        val assistanceTwo = Assistance(Kind.SMALL, 325.0, 425.0, userTwo)
+        val a = AssistanceKind.SMALL.toString()
 
-        assistanceDAO.save(assistanceOne)
-        val assTwo = assistanceDAO.save(assistanceTwo)
-        val result = assistanceDAO.findAllByKind("SMALL")
+        val assistanceRecords = assistanceDAO.findAllByKind(AssistanceKind.SMALL.toString())
 
-        Assertions.assertThat(result).contains(assTwo)
+        assertContentEquals(listOf(newAssistanceTwo), assistanceRecords)
     }
 }

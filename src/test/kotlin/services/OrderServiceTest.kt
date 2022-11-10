@@ -57,7 +57,7 @@ class OrderServiceTest {
             "lisa.simpson@email.com",
             "1122223333"
         )
-        val newAssistance = Assistance(Kind.LARGE, 250.0, 500.0, newUserForAssistance)
+        val newAssistance = Assistance(AssistanceKind.LARGE, newUserForAssistance, 250.0, 500.0, 150.0)
 
         userAssistance = userDAO.save(newUserForAssistance)
         userClient = userDAO.save(newUserForClient)
@@ -378,7 +378,7 @@ class OrderServiceTest {
         val orderUpdateRequest2 = OrderUpdateRequestDTO(
             order.id,
             "COMPLETED",
-            5,
+            5.0,
             "0303456"
         )
 
@@ -419,7 +419,7 @@ class OrderServiceTest {
         val orderUpdateRequest2 = OrderUpdateRequestDTO(
             order.id,
             "COMPLETED",
-            5,
+            5.0,
             "0303456"
         )
 
@@ -428,7 +428,7 @@ class OrderServiceTest {
         val newOrderUpdateRequest3 = OrderUpdateRequestDTO(
             order.id,
             "CANCELLED",
-            5,
+            5.0,
             "0303456"
         )
 
@@ -451,7 +451,7 @@ class OrderServiceTest {
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
             "COMPLETED",
-            5,
+            5.0,
             "0303456"
         )
 
@@ -482,7 +482,7 @@ class OrderServiceTest {
         val orderUpdateRequest2 = OrderUpdateRequestDTO(
             order.id,
             "COMPLETED",
-            5,
+            5.0,
             "0303456"
         )
 
@@ -514,7 +514,7 @@ class OrderServiceTest {
         val orderUpdateRequest2 = OrderUpdateRequestDTO(
             order.id,
             "COMPLETED",
-            -5,
+            -5.0,
             "0303456"
         )
 
