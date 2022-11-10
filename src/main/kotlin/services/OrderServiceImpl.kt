@@ -68,16 +68,19 @@ class OrderServiceImpl(
         val order = orderDAO.find(orderUpdateRequest.orderId!!)
 
         if (OrderStatus.valueOf(orderUpdateRequest.status!!) == order.status) {
-            throw RuntimeException("Order can not be updated because it's already in status ${order.status}")
+            throw RuntimeException("Order can not be updated because its status is already ${order.status}")
         }
         if (order.status in setOf(OrderStatus.CANCELLED, OrderStatus.COMPLETED)) {
             throw RuntimeException("Order can not be updated from status ${order.status} to ${orderUpdateRequest.status}")
         }
         if (OrderStatus.valueOf(orderUpdateRequest.status!!) == OrderStatus.COMPLETED && order.status == OrderStatus.PENDING_APPROVAL) {
-            throw RuntimeException("Order can not be updated because it's already in status ${order.status}")
+            throw RuntimeException("Order can not be updated from status ${order.status} to ${orderUpdateRequest.status}")
+        }
+        if (OrderStatus.valueOf(orderUpdateRequest.status!!) == OrderStatus.PENDING_APPROVAL && order.status != OrderStatus.PENDING_APPROVAL) {
+            throw RuntimeException("Order can not be updated from status ${order.status} to ${orderUpdateRequest.status}")
         }
         if (orderUpdateRequest.kmTraveled != null && orderUpdateRequest.kmTraveled < 0) {
-            throw RuntimeException("You can not put negative kilometers")
+            throw RuntimeException("Traveled kilometers can not be negative")
         }
 
         if (order.status == OrderStatus.IN_PROGRESS) {
