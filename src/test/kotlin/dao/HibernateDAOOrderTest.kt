@@ -70,12 +70,12 @@ class HibernateDAOOrderTest {
 
         val persistedOrder = orderDAO.save(order)
 
-        persistedOrder.status = OrderStatus.COMPLETED
+        persistedOrder.status = OrderStatus.IN_PROGRESS
 
         orderDAO.update(persistedOrder)
 
         val updatedOrder = orderDAO.find(persistedOrder.id!!)
 
-        assertEquals(OrderStatus.COMPLETED, updatedOrder.status)
+        assertEquals(OrderStatus.IN_PROGRESS, updatedOrder.status)
     }
 }
