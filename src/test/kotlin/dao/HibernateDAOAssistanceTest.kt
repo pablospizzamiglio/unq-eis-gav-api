@@ -4,18 +4,16 @@ import entity.Assistance
 import entity.AssistanceKind
 import entity.User
 import entity.UserType
-import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.*
 import javax.persistence.EntityManager
 import javax.persistence.EntityManagerFactory
 import javax.persistence.Persistence
-import kotlin.test.assertContains
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernateDAOAssistantTest {
+class HibernateDAOAssistanceTest {
     private lateinit var entityManagerFactory: EntityManagerFactory
     private lateinit var entityManager: EntityManager
     private lateinit var assistanceDAO: HibernateAssistanceDAO
