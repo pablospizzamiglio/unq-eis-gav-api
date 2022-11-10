@@ -49,12 +49,14 @@ class HibernateDAOOrderTest {
 
         val persistedUser = userDAO.save(newUser)
 
-        val newAssistance = Assistance(Kind.LARGE, 250.0, 500.0, persistedUser)
+        val newAssistance = Assistance(AssistanceKind.LARGE, persistedUser, 250.0, 500.0, 150.0)
 
         val persistedAssistance = assistanceDAO.save(newAssistance)
 
         val order = Order(
             persistedAssistance,
+            persistedUser,
+            OrderStatus.PENDING_APPROVAL,
             "q",
             "q",
             "q",
@@ -62,9 +64,8 @@ class HibernateDAOOrderTest {
             "1111111111",
             persistedAssistance.costPerKm,
             persistedAssistance.fixedCost,
-            0,
-            OrderStatus.PENDING_APPROVAL,
-            persistedUser
+            150.0,
+            0.0
         )
 
         val persistedOrder = orderDAO.save(order)

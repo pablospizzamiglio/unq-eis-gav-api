@@ -5,6 +5,6 @@ import java.util.*
 class OrderUpdateRequestDTO(
     val orderId: UUID?,
     val status: String?,
-    val kmTraveled: Int?,
+    val kmTraveled: Double?,
     val password: String?
 )

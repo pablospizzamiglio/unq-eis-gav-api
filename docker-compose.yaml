@@ -6,11 +6,11 @@ services:
     ports:
       - "7070:7070"
     environment:
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_NAME=gav
-      - DB_USER=root
-      - DB_PASSWORD=root
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: gav
+      DB_USER: root
+      DB_PASSWORD: root
     depends_on:
       - db
     networks:

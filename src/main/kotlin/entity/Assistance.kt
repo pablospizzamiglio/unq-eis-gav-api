@@ -3,7 +3,7 @@ package entity
 import java.util.*
 import javax.persistence.*
 
-enum class Kind {
+enum class AssistanceKind {
     SMALL,
     MEDIUM,
     LARGE,
@@ -15,9 +15,10 @@ enum class Kind {
 @Table(name = "assistance")
 class Assistance(
     @Enumerated(EnumType.STRING)
-    var kind: Kind,
+    var kind: AssistanceKind,
+    @OneToOne(cascade = [CascadeType.ALL])
+    var user: User,
     var costPerKm: Double,
     var fixedCost: Double,
-    @OneToOne(cascade = [CascadeType.ALL])
-    val user: User
+    var cancellationCost: Double,
 ) : AbstractJpaPersistable<UUID>()
