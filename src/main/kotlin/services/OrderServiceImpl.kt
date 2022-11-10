@@ -67,27 +67,34 @@ class OrderServiceImpl(
     fun updateOrderStatus(orderUpdateRequest: OrderUpdateRequestDTO): Order {
         val order = orderDAO.find(orderUpdateRequest.orderId!!)
 
-        if (OrderStatus.valueOf(orderUpdateRequest.status!!) == order.status) {
+        val newStatus = OrderStatus.valueOf(orderUpdateRequest.status!!)
+
+        if (newStatus == order.status) {
             throw RuntimeException("Order can not be updated because its status is already ${order.status}")
         }
         if (order.status in setOf(OrderStatus.CANCELLED, OrderStatus.COMPLETED)) {
             throw RuntimeException("Order can not be updated from status ${order.status} to ${orderUpdateRequest.status}")
         }
-        if (OrderStatus.valueOf(orderUpdateRequest.status!!) == OrderStatus.COMPLETED && order.status == OrderStatus.PENDING_APPROVAL) {
+        if (newStatus == OrderStatus.COMPLETED && order.status == OrderStatus.PENDING_APPROVAL) {
             throw RuntimeException("Order can not be updated from status ${order.status} to ${orderUpdateRequest.status}")
         }
-        if (OrderStatus.valueOf(orderUpdateRequest.status!!) == OrderStatus.PENDING_APPROVAL && order.status != OrderStatus.PENDING_APPROVAL) {
+        if (newStatus == OrderStatus.PENDING_APPROVAL && order.status != OrderStatus.PENDING_APPROVAL) {
             throw RuntimeException("Order can not be updated from status ${order.status} to ${orderUpdateRequest.status}")
         }
         if (orderUpdateRequest.kmTraveled != null && orderUpdateRequest.kmTraveled <= 0) {
             throw RuntimeException("Traveled kilometers can not be zero or a negative number")
         }
 
-        if (order.status == OrderStatus.IN_PROGRESS && OrderStatus.valueOf(orderUpdateRequest.status!!) == OrderStatus.COMPLETED) {
+        if (order.status == OrderStatus.IN_PROGRESS && newStatus == OrderStatus.COMPLETED) {
             order.kmTraveled = orderUpdateRequest.kmTraveled
+        } else if (newStatus == OrderStatus.CANCELLED) {
+            val assistance = assistanceDAO.find(order.assistance.id!!)
+            val user = userDAO.find(order.user.id!!)
+            order.cancellationCost = assistance.cancellationCost
+            user.debts += assistance.cancellationCost
         }
 
-        order.status = OrderStatus.valueOf(orderUpdateRequest.status!!)
+        order.status = newStatus
 
         return orderDAO.update(order)
     }

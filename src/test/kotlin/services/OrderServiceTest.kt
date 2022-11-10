@@ -95,7 +95,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `street with special character rejected`() {
+    fun `street with special character throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen |23",
@@ -114,7 +114,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `between streets with special character rejected`() {
+    fun `between streets with special character throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -133,7 +133,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `city with special character rejected`() {
+    fun `city with special character throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -152,7 +152,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `city with numbers rejected`() {
+    fun `city with numbers throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -171,7 +171,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `province with special character rejected`() {
+    fun `province with special character throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -190,7 +190,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `province with numbers rejected`() {
+    fun `province with numbers throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -209,7 +209,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `phone with non numeric characters rejected`() {
+    fun `phone with non numeric characters throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -228,7 +228,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `9 digit long phone number is rejected`() {
+    fun `9 digit long phone number throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -247,7 +247,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `11 digit long phone number is rejected`() {
+    fun `11 digit long phone number throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -266,7 +266,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `cancel an order that has already been canceled is rejected`() {
+    fun `updating a CANCELLED order to CANCELLED throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -280,7 +280,7 @@ class OrderServiceTest {
         val order = orderService.createOrder(orderCreateRequest)
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "CANCELLED",
+            OrderStatus.CANCELLED.toString(),
             null,
             "0303456"
         )
@@ -290,7 +290,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `update a canceled order to IN_PROGRESS is rejected`() {
+    fun `updating a CANCELLED order to IN_PROGRESS throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -304,7 +304,7 @@ class OrderServiceTest {
         val order = orderService.createOrder(orderCreateRequest)
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "CANCELLED",
+            OrderStatus.CANCELLED.toString(),
             null,
             "0303456"
         )
@@ -313,7 +313,7 @@ class OrderServiceTest {
 
         val newOrderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "IN_PROGRESS",
+            OrderStatus.IN_PROGRESS.toString(),
             null,
             "0303456"
         )
@@ -322,7 +322,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `update a IN_PROGRESS order to IN_PROGRESS is rejected`() {
+    fun `updating a IN_PROGRESS order to IN_PROGRESS throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -336,7 +336,7 @@ class OrderServiceTest {
         val order = orderService.createOrder(orderCreateRequest)
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "IN_PROGRESS",
+            OrderStatus.IN_PROGRESS.toString(),
             null,
             "0303456"
         )
@@ -345,7 +345,7 @@ class OrderServiceTest {
 
         val newOrderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "IN_PROGRESS",
+            OrderStatus.IN_PROGRESS.toString(),
             null,
             "0303456"
         )
@@ -354,7 +354,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `update a IN_PROGRESS order to COMPLETED is rejected`() {
+    fun `updating a IN_PROGRESS order to COMPLETED throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -368,7 +368,7 @@ class OrderServiceTest {
         val order = orderService.createOrder(orderCreateRequest)
         val newOrderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "IN_PROGRESS",
+            OrderStatus.IN_PROGRESS.toString(),
             null,
             "0303456"
         )
@@ -377,7 +377,7 @@ class OrderServiceTest {
 
         val orderUpdateRequest2 = OrderUpdateRequestDTO(
             order.id,
-            "COMPLETED",
+            OrderStatus.COMPLETED.toString(),
             5.0,
             "0303456"
         )
@@ -386,7 +386,7 @@ class OrderServiceTest {
 
         val newOrderUpdateRequest3 = OrderUpdateRequestDTO(
             order.id,
-            "IN_PROGRESS",
+            OrderStatus.IN_PROGRESS.toString(),
             null,
             "0303456"
         )
@@ -395,7 +395,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `update a cancelled order to COMPLETED is rejected`() {
+    fun `updating a CANCELLED order to COMPLETED throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -409,7 +409,7 @@ class OrderServiceTest {
         val order = orderService.createOrder(orderCreateRequest)
         val newOrderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "IN_PROGRESS",
+            OrderStatus.IN_PROGRESS.toString(),
             null,
             "0303456"
         )
@@ -418,7 +418,7 @@ class OrderServiceTest {
 
         val orderUpdateRequest2 = OrderUpdateRequestDTO(
             order.id,
-            "COMPLETED",
+            OrderStatus.COMPLETED.toString(),
             5.0,
             "0303456"
         )
@@ -427,7 +427,7 @@ class OrderServiceTest {
 
         val newOrderUpdateRequest3 = OrderUpdateRequestDTO(
             order.id,
-            "CANCELLED",
+            OrderStatus.CANCELLED.toString(),
             5.0,
             "0303456"
         )
@@ -436,7 +436,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `update a COMPLETED order to PENDING_APPROVAL is rejected`() {
+    fun `updating a COMPLETED order to PENDING_APPROVAL throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -450,7 +450,7 @@ class OrderServiceTest {
         val order = orderService.createOrder(orderCreateRequest)
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "COMPLETED",
+            OrderStatus.COMPLETED.toString(),
             5.0,
             "0303456"
         )
@@ -459,7 +459,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `update a COMPLETED order to CANCELLED is rejected`() {
+    fun `updating a COMPLETED order to CANCELLED throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -473,7 +473,7 @@ class OrderServiceTest {
         val order = orderService.createOrder(orderCreateRequest)
         val orderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "CANCELLED",
+            OrderStatus.CANCELLED.toString(),
             null,
             "0303456"
         )
@@ -481,7 +481,7 @@ class OrderServiceTest {
         orderService.updateOrderStatus(orderUpdateRequest)
         val orderUpdateRequest2 = OrderUpdateRequestDTO(
             order.id,
-            "COMPLETED",
+            OrderStatus.COMPLETED.toString(),
             5.0,
             "0303456"
         )
@@ -490,7 +490,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `update with negative kilometers is rejected`() {
+    fun `updating an order with negative kilometers throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -504,7 +504,7 @@ class OrderServiceTest {
         val order = orderService.createOrder(orderCreateRequest)
         val newOrderUpdateRequest = OrderUpdateRequestDTO(
             order.id,
-            "IN_PROGRESS",
+            OrderStatus.IN_PROGRESS.toString(),
             null,
             "0303456"
         )
@@ -513,7 +513,7 @@ class OrderServiceTest {
 
         val orderUpdateRequest2 = OrderUpdateRequestDTO(
             order.id,
-            "COMPLETED",
+            OrderStatus.COMPLETED.toString(),
             -5.0,
             "0303456"
         )
@@ -521,7 +521,7 @@ class OrderServiceTest {
         assertThrows<RuntimeException> { orderService.updateOrderStatus(orderUpdateRequest2) }
     }
     @Test
-    fun `create order with userId not found`() {
+    fun `creating an order with nonexistent user throws an exception`() {
         val orderCreateRequest = OrderCreateRequestDTO(
             assistance.id,
             "Evergreen 123",
@@ -536,7 +536,7 @@ class OrderServiceTest {
     }
 
     @Test
-    fun `create order with user Assistance is reject`() {
+    fun `creating an order with user of type assistance throws an exception`() {
         val newUserForAssistance = User(
             "Pablo",
             "Escobar",
@@ -556,5 +556,37 @@ class OrderServiceTest {
         )
 
         assertThrows<RuntimeException> { orderService.createOrder(orderCreateRequest) }
+    }
+
+    @Test
+    fun `cancelling an order`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+
+        assertEquals(OrderStatus.PENDING_APPROVAL, order.status)
+
+        val orderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.CANCELLED.toString(),
+            null,
+            "0303456",
+        )
+
+        val updatedOrder = orderService.updateOrderStatus(orderUpdateRequest)
+
+        assertEquals(OrderStatus.CANCELLED, updatedOrder.status)
+
+        val updatedUser = userDAO.find(updatedOrder.user.id!!)
+
+        assertEquals(assistance.cancellationCost, updatedUser.debts)
     }
 }
