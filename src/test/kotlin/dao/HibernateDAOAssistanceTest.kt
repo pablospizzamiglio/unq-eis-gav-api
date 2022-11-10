@@ -43,7 +43,7 @@ class HibernateDAOAssistanceTest {
         )
         userTwo = User(
             "German",
-            "McRonalds",
+            "McRonald",
             UserType.ASSISTANCE,
             "german@email.com",
             "0303456664"
@@ -79,10 +79,8 @@ class HibernateDAOAssistanceTest {
 
     @Test
     fun `filter by kind returns a non-empty list`() {
-        val newAssistanceOne = assistanceDAO.save(assistanceOne)
+        assistanceDAO.save(assistanceOne)
         val newAssistanceTwo = assistanceDAO.save(assistanceTwo)
-
-        val a = AssistanceKind.SMALL.toString()
 
         val assistanceRecords = assistanceDAO.findAllByKind(AssistanceKind.SMALL.toString())
 
