@@ -28,4 +28,5 @@ class Order(
     var fixedCost: Double,
     var cancellationCost: Double,
     var kmTraveled: Double? = null,
+    var score: Int = 0
 ) : AbstractJpaPersistable<UUID>()

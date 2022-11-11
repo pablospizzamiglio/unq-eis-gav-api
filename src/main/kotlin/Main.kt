@@ -43,6 +43,9 @@ fun main() {
         path("assistance") {
             get(assistanceController::findAll)
         }
+        path("score"){
+            put(orderController::updateScore)
+        }
         path("orders") {
             get(orderController::findAll)
             post(orderController::createOrder)

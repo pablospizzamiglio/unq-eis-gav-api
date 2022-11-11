@@ -3,6 +3,7 @@ package services
 import api.controllers.Validator
 import api.dtos.OrderCreateRequestDTO
 import api.dtos.OrderUpdateRequestDTO
+import api.dtos.ScoreRequestDTO
 import dao.HibernateAssistanceDAO
 import dao.HibernateOrderDAO
 import dao.HibernateUserDAO
@@ -111,5 +112,20 @@ class OrderServiceImpl(
             orderDAO.findAllByStatus(orderStatus)
         }
         return orders
+    }
+
+    fun addScore(orderScoreRequest: ScoreRequestDTO): Any {
+        val order = orderDAO.find(orderScoreRequest.orderId!!)
+        if (order.score > 0) {
+            throw RuntimeException("The order ${orderScoreRequest.orderId} has already been scored")
+        }
+        if (order.user.id!! != orderScoreRequest.userId) {
+            throw RuntimeException("The order ${orderScoreRequest.orderId} does not correspond to the user ${orderScoreRequest.userId}")
+        }
+        if (orderScoreRequest.score < 1 || orderScoreRequest.score > 5) {
+            throw RuntimeException("The score ${orderScoreRequest.score} must be greater than or equal to 1 or less than or equal to 5")
+        }
+        order.score = orderScoreRequest.score
+        return orderDAO.update(order)
     }
 }
