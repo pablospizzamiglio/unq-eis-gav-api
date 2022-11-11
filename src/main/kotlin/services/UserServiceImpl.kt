@@ -23,8 +23,8 @@ class UserServiceImpl(private val userDAO: HibernateUserDAO) {
         if (validator.containsNumber(userCreateRequest.lastName)) {
             throw RuntimeException("Last Name can not contain numbers")
         }
-        if (!validator.isValidEMail(userCreateRequest.emailAddress)) {
-            throw RuntimeException("E-Mail Address is not valid")
+        if (!validator.isValidUserType(userCreateRequest.type)) {
+            throw RuntimeException("Type of user is not valid")
         }
         if (!validator.isValidEMail(userCreateRequest.emailAddress)) {
             throw RuntimeException("E-Mail Address is not valid")
