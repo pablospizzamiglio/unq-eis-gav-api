@@ -26,8 +26,13 @@ class UserServiceImpl(private val userDAO: HibernateUserDAO) {
         if (!validator.isValidEMail(userCreateRequest.emailAddress)) {
             throw RuntimeException("E-Mail Address is not valid")
         }
-        if (!validator.isValidUserType(userCreateRequest.type)) {
-            throw RuntimeException("Type of user is not valid")
+        if (!validator.isValidEMail(userCreateRequest.emailAddress)) {
+            throw RuntimeException("E-Mail Address is not valid")
+        }
+        val userFound = userDAO.findAll().find { user: User -> user.emailAddress == userCreateRequest.emailAddress }
+
+        if (userFound != null) {
+            throw RuntimeException("The email is already registered")
         }
         val user = User(
             userCreateRequest.firstName,

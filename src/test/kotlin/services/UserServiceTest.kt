@@ -53,7 +53,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `firstname with special character rejected`() {
+    fun `firstname with special character throws an exception`() {
         val user = UserCreateRequestDTO(
             "Li\$a",
             "Simpson",
@@ -70,7 +70,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `firstname with numbers rejected`() {
+    fun `firstname with numbers throws an exception`() {
         val user = UserCreateRequestDTO(
             "Lu1s",
             "Bello",
@@ -87,7 +87,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `lastname with special character rejected`() {
+    fun `lastname with special character throws an exception`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bell++o",
@@ -104,7 +104,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `lastname with numbers rejected`() {
+    fun `lastname with numbers throws an exception`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bell05",
@@ -121,7 +121,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `email with special character before the @ rejected`() {
+    fun `email with special character before the @ throws an exception`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bello",
@@ -138,7 +138,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `email without com rejected`() {
+    fun `email without com throws an exception`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bello",
@@ -155,7 +155,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `email without @ rejected`() {
+    fun `email without @ throws an exception`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bello",
@@ -172,7 +172,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `user with invalid type rejected`() {
+    fun `user with invalid type throws an exception`() {
         val user = UserCreateRequestDTO(
             "Luis",
             "Bello",
@@ -187,4 +187,23 @@ class UserServiceTest {
 
         assertTrue { users.isEmpty() }
     }
+
+    @Test
+    fun `Registration with email already registered throws an exception`() {
+        val user = UserCreateRequestDTO(
+            "Lisa",
+            "Simpsons",
+            "CLIENT",
+            "lisa.simpson@email.com",
+            "1122223333"
+        )
+
+        userService.createUser(user)
+        val users = userService.findAll()
+
+        assertThrows<RuntimeException> { userService.createUser(user) }
+        assertTrue { users.size == 1 }
+    }
+
+
 }
