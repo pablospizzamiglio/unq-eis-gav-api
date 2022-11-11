@@ -2,6 +2,7 @@ package services
 
 import api.dtos.OrderCreateRequestDTO
 import api.dtos.OrderUpdateRequestDTO
+import api.dtos.ScoreRequestDTO
 import dao.HibernateAssistanceDAO
 import dao.HibernateOrderDAO
 import dao.HibernateUserDAO
@@ -588,5 +589,191 @@ class OrderServiceTest {
         val updatedUser = userDAO.find(updatedOrder.user.id!!)
 
         assertEquals(assistance.cancellationCost, updatedUser.debts)
+    }
+
+    @Test
+    fun `register score with unrequited user throws an exception`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.IN_PROGRESS.toString(),
+            null,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(newOrderUpdateRequest)
+
+        val orderUpdateRequest2 = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.COMPLETED.toString(),
+            5.0,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(orderUpdateRequest2)
+
+        val scoreRequestDTO = ScoreRequestDTO( order.id!!, UUID.randomUUID(),4)
+
+        assertThrows<RuntimeException> { orderService.addScore(scoreRequestDTO) }
+    }
+
+    @Test
+    fun `register score less than 1 throws an exception`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.IN_PROGRESS.toString(),
+            null,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(newOrderUpdateRequest)
+
+        val orderUpdateRequest2 = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.COMPLETED.toString(),
+            2.0,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(orderUpdateRequest2)
+
+        val scoreRequestDTO = ScoreRequestDTO( order.id!!, userClient.id!!,0)
+
+        assertThrows<RuntimeException> { orderService.addScore(scoreRequestDTO) }
+    }
+
+    @Test
+    fun `register score greater than 5 throws an exception`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.IN_PROGRESS.toString(),
+            null,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(newOrderUpdateRequest)
+
+        val orderUpdateRequest2 = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.COMPLETED.toString(),
+            2.0,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(orderUpdateRequest2)
+
+        val scoreRequestDTO = ScoreRequestDTO( order.id!!, userClient.id!!,6)
+
+        assertThrows<RuntimeException> { orderService.addScore(scoreRequestDTO) }
+    }
+
+    @Test
+    fun `register score`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.IN_PROGRESS.toString(),
+            null,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(newOrderUpdateRequest)
+
+        val orderUpdateRequest2 = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.COMPLETED.toString(),
+            2.0,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(orderUpdateRequest2)
+
+        val scoreRequestDTO = ScoreRequestDTO( order.id!!, userClient.id!!,3)
+
+        orderService.addScore(scoreRequestDTO)
+
+        val orderUpdated = orderService.findOrder(order.id!!)
+
+        assertTrue { orderUpdated.score == 3 }
+    }
+
+    @Test
+    fun `register score already registered throws an exception`() {
+        val orderCreateRequest = OrderCreateRequestDTO(
+            assistance.id,
+            "Evergreen 123",
+            "1 and 2",
+            "Springfield",
+            "Springfield",
+            "1122223333",
+            userClient.id
+        )
+
+        val order = orderService.createOrder(orderCreateRequest)
+        val newOrderUpdateRequest = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.IN_PROGRESS.toString(),
+            null,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(newOrderUpdateRequest)
+
+        val orderUpdateRequest2 = OrderUpdateRequestDTO(
+            order.id,
+            OrderStatus.COMPLETED.toString(),
+            2.0,
+            "0303456"
+        )
+
+        orderService.updateOrderStatus(orderUpdateRequest2)
+        val scoreRequestDTO = ScoreRequestDTO( order.id!!, userClient.id!!,3)
+        orderService.addScore(scoreRequestDTO)
+        val scoreRequestDTO2 = ScoreRequestDTO( order.id!!, userClient.id!!,1)
+
+        assertThrows<RuntimeException> { orderService.addScore(scoreRequestDTO2) }
+        assertTrue { orderService.findAll().size == 1 }
     }
 }

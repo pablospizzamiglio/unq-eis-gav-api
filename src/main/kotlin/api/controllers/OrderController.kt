@@ -3,6 +3,7 @@ package api.controllers
 import api.dtos.OrderCreateRequestDTO
 import api.dtos.OrderListDTO
 import api.dtos.OrderUpdateRequestDTO
+import api.dtos.ScoreRequestDTO
 import dao.HibernateAssistanceDAO
 import dao.HibernateOrderDAO
 import dao.HibernateUserDAO
@@ -105,6 +106,33 @@ class OrderController {
         } catch (e: ValidationException) {
             throw e
         } catch (e: Exception) {
+            throw BadRequestResponse(e.message!!)
+        }
+    }
+
+    fun updateScore(ctx: Context) {
+        try {
+            val orderUpdateRequest = ctx.bodyValidator<ScoreRequestDTO>()
+                .check({ obj -> obj.orderId != null }, "Order Id can not be empty")
+                .check({ obj -> !obj.userId.toString().isNullOrBlank() }, "UserId can not be empty")
+                .check({ obj -> obj.score != null }, "Score can not be empty")
+                .get()
+
+            val assistanceDAO = HibernateAssistanceDAO(ctx.entityManager)
+            val userDAO = HibernateUserDAO(ctx.entityManager)
+            val orderDAO = HibernateOrderDAO(ctx.entityManager)
+            val orderService = OrderServiceImpl(orderDAO, assistanceDAO, userDAO)
+
+            ctx.entityManager.transaction.begin()
+            val order = orderService.addScore(orderUpdateRequest)
+            ctx.entityManager.transaction.commit()
+
+            ctx.json(order)
+        } catch (e: ValidationException) {
+            ctx.entityManager.transaction.rollback()
+            throw e
+        } catch (e: Exception) {
+            ctx.entityManager.transaction.rollback()
             throw BadRequestResponse(e.message!!)
         }
     }
