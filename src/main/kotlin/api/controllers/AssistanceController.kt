@@ -2,6 +2,7 @@ package api.controllers
 
 import api.dtos.ResultAssistanceDTO
 import dao.HibernateAssistanceDAO
+import dao.HibernateOrderDAO
 import entityManager
 import io.javalin.core.validation.ValidationException
 import io.javalin.http.BadRequestResponse
@@ -11,7 +12,8 @@ import services.AssistanceServiceImpl
 class AssistanceController {
     fun findAll(ctx: Context) {
         val assistanceDAO = HibernateAssistanceDAO(ctx.entityManager)
-        val assistanceService = AssistanceServiceImpl(assistanceDAO)
+        val orderDAO = HibernateOrderDAO(ctx.entityManager)
+        val assistanceService = AssistanceServiceImpl(assistanceDAO,orderDAO)
 
         if (ctx.queryParam("kind") == null) {
             val assistanceRecords = assistanceService.findAll()

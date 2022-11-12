@@ -11,16 +11,18 @@ class AssistanceSimpleDTO(
     val fixedCost: Double,
     val costPerKm: Double,
     val cancellationCost: Double,
+    val score: Int
 ) {
     companion object {
-        fun fromModel(assistance: Assistance): AssistanceSimpleDTO {
+        fun fromModel(assistance: Assistance, score: Int): AssistanceSimpleDTO {
             return AssistanceSimpleDTO(
                 assistance.id!!,
                 assistance.user,
                 assistance.kind.toString(),
                 assistance.fixedCost,
                 assistance.costPerKm,
-                assistance.cancellationCost
+                assistance.cancellationCost,
+                score
             )
         }
     }
