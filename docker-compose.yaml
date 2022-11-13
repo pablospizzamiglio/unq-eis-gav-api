@@ -12,7 +12,8 @@ services:
       DB_USER: root
       DB_PASSWORD: root
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - gav
   db:
@@ -24,6 +25,13 @@ services:
     command: mysqld --sql_mode=""
     networks:
       - gav
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+
 
 networks:
   gav:
