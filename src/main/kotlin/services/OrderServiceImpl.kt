@@ -82,7 +82,7 @@ class OrderServiceImpl(
         if (newStatus == OrderStatus.PENDING_APPROVAL && order.status != OrderStatus.PENDING_APPROVAL) {
             throw RuntimeException("Order can not be updated from status ${order.status} to ${orderUpdateRequest.status}")
         }
-        if (orderUpdateRequest.kmTraveled != null && orderUpdateRequest.kmTraveled <= 0) {
+        if (newStatus == OrderStatus.COMPLETED && (orderUpdateRequest.kmTraveled == null || orderUpdateRequest.kmTraveled <= 0)) {
             throw RuntimeException("Traveled kilometers can not be zero or a negative number")
         }
 
