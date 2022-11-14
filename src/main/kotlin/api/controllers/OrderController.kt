@@ -114,7 +114,7 @@ class OrderController {
         try {
             val orderUpdateRequest = ctx.bodyValidator<ScoreRequestDTO>()
                 .check({ obj -> obj.orderId != null }, "Order Id can not be empty")
-                .check({ obj -> !obj.userId.toString().isNullOrBlank() }, "UserId can not be empty")
+                .check({ obj -> obj.userId != null }, "User Id can not be empty")
                 .check({ obj -> obj.score != null }, "Score can not be empty")
                 .get()
 

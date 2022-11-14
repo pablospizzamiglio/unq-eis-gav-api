@@ -29,4 +29,13 @@ class Order(
     var cancellationCost: Double,
     var kmTraveled: Double? = null,
     var score: Int = 0
-) : AbstractJpaPersistable<UUID>()
+) : AbstractJpaPersistable<UUID>() {
+    val totalCost: Double
+        get() {
+            return when (status) {
+                OrderStatus.COMPLETED -> fixedCost + costPerKm * (kmTraveled ?: 0.0)
+                OrderStatus.CANCELLED -> fixedCost + cancellationCost
+                else -> 0.0
+            }
+        }
+}
