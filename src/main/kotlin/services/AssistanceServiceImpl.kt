@@ -29,7 +29,7 @@ class AssistanceServiceImpl(
 
         var scores = assistances.map {
             val orders = orders.filter { order -> order.assistance.id!! == it.id }
-            if (!orders.isEmpty()) {
+            if (orders.isEmpty()) {
                 0
             } else {
                 orders.sumOf { it.score } / orders.size
