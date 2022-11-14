@@ -116,15 +116,17 @@ class OrderServiceImpl(
 
     fun addScore(orderScoreRequest: ScoreRequestDTO): Any {
         val order = orderDAO.find(orderScoreRequest.orderId!!)
+
         if (order.score > 0) {
-            throw RuntimeException("The order ${orderScoreRequest.orderId} has already been scored")
+            throw RuntimeException("The order has already been scored")
         }
         if (order.user.id!! != orderScoreRequest.userId) {
-            throw RuntimeException("The order ${orderScoreRequest.orderId} does not correspond to the user ${orderScoreRequest.userId}")
+            throw RuntimeException("The order does not correspond to the provided user")
         }
-        if (orderScoreRequest.score < 1 || orderScoreRequest.score > 5) {
+        if (orderScoreRequest.score!! !in 1..5) {
             throw RuntimeException("The score ${orderScoreRequest.score} must be greater than or equal to 1 or less than or equal to 5")
         }
+
         order.score = orderScoreRequest.score
         return orderDAO.update(order)
     }
