@@ -14,19 +14,26 @@ class AssistanceServiceImpl(
 
         var scores = assistances.map {
             val orders = orders.filter { order -> order.assistance.id!! == it.id }
-            orders.sumOf { it.score / orders.size }
+            if (orders.isEmpty()) {
+                0
+            } else {
+                orders.sumOf { it.score } / orders.size
+            }
         }
         return assistances.zip(scores)
-        //assistanceDAO.findAll()
     }
 
     fun findAllByKind(kind: String): List<Pair<Assistance, Int>> {
-        val assistances =  assistanceDAO.findAllByKind(kind)
+        val assistances = assistanceDAO.findAllByKind(kind)
         val orders = orderDAO.findAll()
 
         var scores = assistances.map {
             val orders = orders.filter { order -> order.assistance.id!! == it.id }
-            orders.sumOf { it.score / orders.size }
+            if (orders.isEmpty()) {
+                0
+            } else {
+                orders.sumOf { it.score } / orders.size
+            }
         }
         return assistances.zip(scores)
     }
